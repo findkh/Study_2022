@@ -14,28 +14,31 @@ A × B × C = 150 × 266 × 427 = 17037300 이 되고,
 마찬가지로 둘째 줄부터 열 번째 줄까지 A × B × C의 결과에 1부터 9까지의 숫자가 각각 몇 번 쓰였는지 차례로 한 줄에 하나씩 출력한다.
  */
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 public class CountNum {
 
-  public static void main(String[] args){ 
-    Scanner in = new Scanner(System.in);
+  public static void main(String[] args) throws Exception{ 
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    int multiple = (in.nextInt() * in.nextInt() * in.nextInt());
-    String str = Integer.toString(multiple); //곱한 값을 str에 담는다.
+    int a = Integer.parseInt(in.readLine());
+    int b = Integer.parseInt(in.readLine());
+    int c = Integer.parseInt(in.readLine());
     in.close();
 
-    for (int i = 0; i < 10; i++) {
-      int count = 0;
-      for (int j = 0; j < str.length(); j++) {
-        if((str.charAt(j) - '0') == i) {
-          count++;
-        }
-      }
-      System.out.println(count);
+    int mul = a * b * c;
+    String str = Integer.toString(mul); //a*b*c의 값을 String으로 변환함.
+
+    char[] arr = new char[str.length()];
+    for(int i = 0; i <str.length(); i++) { //계산된 값을 배열에 넣음
+      arr[i] = str.charAt(i);
     }
+    System.out.println(arr[0]);
+    System.out.println(arr[1]);
+
+
+
   }
 }
 
-//charAt()
-//String으로 저장된 문자열 중에서 한 글자만 선택해서 char타입으로 변환한다.
-// -'0'을 붙여주지 않으면 아스키 코드에 대응하는 문자가 나온다.
+
