@@ -19,9 +19,6 @@ public class selfNum {
     int[] selfNum = new int[10000];
     for (int i = 1; i < 10000; i++) {
       selfNum[selfNumMaker(i)]++;
-    }
-
-    for (int i = 1; i <selfNum.length; i++) {
       if (selfNum[i] == 0) {
         System.out.println(i);
       }
@@ -32,8 +29,8 @@ public class selfNum {
     int sum = n;
 
     while (n != 0) {
-      sum += n % 10; //몫
-      n /= 10; //나머지
+      sum += n % 10; 
+      n /= 10; 
 
       if (sum > 9999) {
         return 0;
