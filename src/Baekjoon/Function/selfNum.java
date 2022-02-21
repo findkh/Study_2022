@@ -16,16 +16,16 @@ n을 d(n)의 생성자라고 한다. 위의 수열에서 33은 39의 생성자�
 
 public class selfNum {
   public static void main(String[] args) {
-    int[] selfNum = new int[10000];
+    int[] Num = new int[10000];
     for (int i = 1; i < 10000; i++) {
-      selfNum[selfNumMaker(i)]++;
-      if (selfNum[i] == 0) {
+      Num[NumCreater(i)]++; 
+      if (Num[i] == 0) { //생성자로 쓰이지 않았다면 출력한다.(=셀프 넘버)
         System.out.println(i);
       }
     }
   }
 
-  public static int selfNumMaker(int n) {
+  public static int NumCreater(int n) { //생성자를 구하는 함수
     int sum = n;
 
     while (n != 0) {

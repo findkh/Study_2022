@@ -1,7 +1,6 @@
 package Data.ArrayList;
 //목록 조회: 제네릭 적용
 
-
 public class study10 {
 
   public static void main(String[] args) {
