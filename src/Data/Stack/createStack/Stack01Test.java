@@ -21,7 +21,7 @@ public class Stack01Test {
 
   static void print(Stack01 stack) {
     for (int i = 0; i < stack.size(); i++) {
-      System.out.println(stack.get(i) + ",");
+      System.out.print(stack.get(i) + ",");
     }
     System.out.println();
   }
