@@ -1,10 +1,14 @@
 package org.zerock.mapper;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.zerock.domain.BoardVO;
+import org.zerock.domain.Criteria;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
@@ -17,9 +21,35 @@ public class BoardMapperTests {
   private BoardMapper mapper;
 
   @Test
-  public void testGetList() {
-    mapper.getList().forEach(board -> log.info(board));
+  public void testpaging() {
+    Criteria cri = new Criteria();
+
+    //    cri.setPageNum(3);
+    //    cri.setAmount(10);
+
+    List<BoardVO> list = mapper.getListWithPaging(cri);
+    list.forEach(board -> log.info(board));
   }
+
+  //  @Test
+  //  public void testPaging() {
+  //
+  //    Criteria cri = new Criteria();
+  //
+  //    //10개씩 3페이지 
+  //    cri.setPageNum(3);
+  //    cri.setAmount(10);
+  //
+  //    List<BoardVO> list = mapper.getListWithPaging(cri);
+  //
+  //    list.forEach(board -> log.info(board));
+  //
+  //  }
+
+  //  @Test
+  //  public void testGetList() {
+  //    mapper.getList().forEach(board -> log.info(board));
+  //  }
 
   //  @Test
   //  public void testInsert() {
