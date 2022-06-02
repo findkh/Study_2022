@@ -1,6 +1,5 @@
 package org.zerock.mapper;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,15 +20,25 @@ public class BoardMapperTests {
   private BoardMapper mapper;
 
   @Test
-  public void testpaging() {
+  public void testSearch()  {
     Criteria cri = new Criteria();
-
-    //    cri.setPageNum(3);
-    //    cri.setAmount(10);
+    cri.setKeyword("새로");
+    cri.setType("TC");
 
     List<BoardVO> list = mapper.getListWithPaging(cri);
     list.forEach(board -> log.info(board));
   }
+
+  //  @Test
+  //  public void testpaging() {
+  //    Criteria cri = new Criteria();
+  //
+  //    //    cri.setPageNum(3);
+  //    //    cri.setAmount(10);
+  //
+  //    List<BoardVO> list = mapper.getListWithPaging(cri);
+  //    list.forEach(board -> log.info(board));
+  //  }
 
   //  @Test
   //  public void testPaging() {
