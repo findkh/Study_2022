@@ -39,6 +39,15 @@ local.properties
 # sbteclipse plugin
 .target
 
+#target/ 디렉터리에 있는 모든 파일 무시합니다.
+target/
+
+#src/ 하위의 .java 파일은 무시되지만 /src/main/ 하위의 .java 파일은 무시되지 않습니다.
+src/*.java
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
 # Tern plugin
 .tern-project
 
