@@ -1,0 +1,1 @@
+document.write("js파일에서 온 write");
