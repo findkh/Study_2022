@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+
+<div id="dialogDiv" class="ui-widget">
+    <h1>파일 업로드</h1>
+    <input type="file" id="fileInput" style="display: none;">
+  </div>
+  <button id="uploadFileBtn">파일업로드</button>
+
+  <div id="dialog-form" title="그리드가 들어 가는 dialog">
+    <p class="validateTips">sbgrid 넣을 곳</p>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    dialog = $( "#dialog-form" ).dialog({
+        autoOpen: false,
+        height: 400,
+        width: 350,
+        modal: true,
+        buttons: {
+        "OK": addGrid,
+            Cancel: function() {
+                dialog.dialog( "close" );
+            }
+        },
+        close: function() {
+        //form[ 0 ].reset();
+        //allFields.removeClass( "ui-state-error" );
+        }
+    });
+
+    $("#uploadFileBtn").click(function() {
+        $("#fileInput").click();
+    });
+}); //ready END;
+
+$("#fileInput").change(function() {
+    dialog.dialog( "open" );
+})
+
+
+function addGrid() {
+    console.log("하하하");
+}
+
+
+
+</script>
+
+</body>
+</html>
