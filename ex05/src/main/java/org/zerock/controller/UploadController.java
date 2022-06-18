@@ -218,25 +218,34 @@ public class UploadController {
   @PostMapping("/deleteFile")
   @ResponseBody
   public ResponseEntity<String> deleteFile(String fileName, String type) {
+
     log.info("deleteFile: " + fileName);
 
     File file;
 
     try {
-      file = new File("C:\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
+      file = new File("c:\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
 
       file.delete();
 
       if (type.equals("image")) {
+
         String largeFileName = file.getAbsolutePath().replace("s_", "");
-        log.info(largeFileName);
+
+        log.info("largeFileName: " + largeFileName);
+
+        file = new File(largeFileName);
+
         file.delete();
       }
+
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<String>("delete", HttpStatus.OK);
+
+    return new ResponseEntity<String>("deleted", HttpStatus.OK);
+
   }
 
 }
