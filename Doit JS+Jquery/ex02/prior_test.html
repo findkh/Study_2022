@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+var a = 10;
+var b = 20;
+var m = 30;
+var n = 40;
+var result;
+
+result = a > b || b >= m || m > n;
+//      10>20 F   20>=30 F  30 > 40 F   = F
+document.write(result, "<br>");
+
+result = a > b || b >= m || m <= n;
+//          F       F       T       = T
+document.write(result, "<br>");
+
+result = a <= b && b >= m && m <= n;
+//          T       F           T   = F
+document.write(result, "<br>");
+
+result = a <= b && b <= m && m <= n;
+//          T       T           T   = T
+document.write(result, "<br>");
+
+result = !(a>b);
+//          T
+document.write(result, "<br>");
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    /*
+    문
+    하루 지출 내역은 3000, 6000, 3000원이다.
+    삼항 조건 연산자를 사용하여 하루 적정 지출 비용인 1만원을 초과했을 경우 xx원 초과 라고 출력하고
+    아닐 경우 돈 관리를 잘했어요라고 출력해라
+    */
+    var price1 = 3000;
+    var price2 = 6000;
+    var price3 = 3000;
+    var normalCost = 10000;
+    var totalCost = price1 + price2 + price3;
+    var result = Math.abs(normalCost - totalCost);
+    totalCost > normalCost ? document.write(result + "원 초과") : document.write("돈관리를 잘했어요");
+</script>
+</body>
+</html>
