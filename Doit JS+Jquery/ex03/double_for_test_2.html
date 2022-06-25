@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    //5행 5열 표를 만들고, 데이터가 1부터 25까지 출력되도록 작성
+    let num = 1;
+    let t = "<table border='1'>";    
+    for(let i = 1; i <= 5; i++) {
+        t += "<tr>";
+        for(let j = 1; j <= 5; j++) {
+            t += "<td>" + num + "</td>";
+            num++;
+        }
+        t += "/<tr>"
+    }
+    t += "</table>";
+    document.write(t);
+</script>
+</body>
+</html>

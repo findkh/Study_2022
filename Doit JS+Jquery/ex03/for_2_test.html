@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    //for문을 사용하여 1~100까지 5의 배수일 경우 빨간색, 7의 배수 초록색, 5의 배수이면서 7의 배수 인 경우 아쿠아색
+    for (let i = 1; i <= 100; i++) {
+        if (i % 5 == 0 && i % 7 != 0) {
+            document.write("<span style='color:red;'>" + i + "</span><Br>")
+        } else if(i % 5 != 0 && i % 7 == 0) {
+            document.write("<span style='color:green;'>" + i + "</span><Br>")
+        } else if(i % 5 == 0 && i % 7 == 0) {
+            document.write("<span style='color:aqua;'>" + i + "</span><Br>")
+        }
+    }
+</script>
+</body>
+</html>
