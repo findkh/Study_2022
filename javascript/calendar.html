@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.js'></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+</head>
+<body>
+    <script>
+        $(document).ready(function() {
+            $("#dialog-calendar-form").dialog({
+              autoOpen: false,
+              height: 900,
+              width: 1200,
+              modal: true,
+              resizable:false,
+              closeOnEscape: false,
+           });
+           
+           $("#btn_calendar").click(function() {
+              $( "#dialog-calendar-form" ).dialog("open");
+           });
+
+           
+           
+        })
+        
+
+
+document.addEventListener('DOMContentLoaded', function() {
+   let calendarEl = document.getElementById('calendar');
+
+   let calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+      //height: 'auto',
+      contentHeight : 600,
+      
+      timeZone: 'local',
+      expandRows: true,
+      displayEventTime: false,
+      editable: false,
+      displayEventTime: false,
+         dayHeaderContent: function (date) {
+           let weekList = ["일", "월", "화", "수", "목", "금", "토"];
+           return weekList[date.dow];
+         },
+      showNonCurrentDates : false, //해당 월만 보이게함
+      fixedWeekCount : false, //6주로 고정할 것인지
+      headerToolbar : {
+         start   : '',
+         center   : 'prev,title,next',
+         end      : 'today'
+      },
+      titleFormat: function (date) {
+           return `${date.date.year}년 ${date.date.month + 1}월`;
+         },
+    /*datesSet: function() {
+            todayStr = calendar.getDate();
+            calendarYear = todayStr.getFullYear();
+            calendarMonth = todayStr.getMonth()+1;
+            calendarDay = todayStr.getDate();
+            //console.log(calendarMonth)
+            
+        },*/
+      events: function(fetchInfo, successCallback, failureCallback) {
+          let calendarYear = (fetchInfo.start).getFullYear();
+            let calendarMonth = (fetchInfo.start).getMonth() + 1;
+        console.log(fetchInfo)
+        console.log(calendarMonth)
+        
+      }
+   });
+   calendar.render();
+});
+
+        </script>
+
+    <div class="content-wrap">
+    <div class="main">
+       <div class="container-fluid">
+          <section id="main-content">
+             <div class="row">
+                <div class="col-lg-12">
+                   <div class="card">
+                      <div class="card-title">
+                         <h3 class="float-left">회원 관리</h3>
+                         <div class="button-list float-right">
+                            <button id="btn_get" type="button" class="btn btn-default m-b-10 m-l-5 float-left">조회</button>
+                            <button id="btn_download" type="button" class="btn btn-default m-b-10 m-l-5 float-left">다운로드</button>
+                            <button id="btn_upload" type="button" class="btn btn-default m-b-10 m-l-5 float-left">업로드</button>
+                            <button id="btn_calendar" type="button" class="btn btn-default m-b-10 m-l-5 float-left">생일 캘린더</button>
+                            <button id="my-today-button" type="button" class="btn btn-default m-b-10 m-l-5 float-left">날짜</button>
+                         </div>
+                      </div>
+                      <div class="card-body">
+                         <div class="row search">
+                            <div class="col-sm-3">
+                               <span class="search-label float-left">ID</span>
+                               <input type="text" id="input_id" class="form-control form-control-sm" placeholder="ID를 입력해주세요"/>
+                            </div>
+                            <div class="col-sm-3">
+                               <span class="search-label float-left">회원명</span>
+                               <input type="text" id="input_name" class="form-control form-control-sm" placeholder="이름을 입력해주세요"/>
+                            </div>
+                            <div class="col-sm-3">
+                               <span class="search-label float-left">등급</span>
+                               <select id="select_grade" class="form-control form-control-sm">
+                               </select>
+                            </div>
+                            <div class="col-sm-3">
+                               <span class="search-label float-left">주소</span>
+                               <input type="text" id="input_address" class="form-control form-control-sm" placeholder=""/>
+                            </div>
+                         </div>
+                         <div id="sbGridArea"></div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </section>
+       </div>
+    </div>
+    
+    <input id="fileInput" type="file" style="display:none;">
+ </div>
+ <style>
+ #calendarDiv {
+    width : 100%;
+    height : 100%;
+ }
+ /*.fc-header-toolbar, fc-daygrid-body {
+    margin : 0px;
+ }*/
+ .fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 10px;
+ }
+ .fc-col-header {
+    width : 100%;
+ }
+ .fc-header-toolbar > .fc-toolbar-chunk > div {
+    display: flex;
+    align-items: center;
+ }
+ .fc-header-toolbar > .fc-toolbar-chunk > div >.fc-toolbar-title {
+    margin: 0px 10px;
+ }
+ </style>
+ <div class="dialog-pop" id="dialog-calendar-form" title="회원 생일 캘린더">
+    <div id="calendarDiv">
+       <div id="calendar"></div>
+    </div>
+ </div>
+
+
+    
+</body>
+</html>
