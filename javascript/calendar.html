@@ -27,6 +27,41 @@
            
            $("#btn_calendar").click(function() {
               $( "#dialog-calendar-form" ).dialog("open");
+              let calendarEl = document.getElementById('calendar');
+
+               let calendar = new FullCalendar.Calendar(calendarEl, {
+               initialView: 'dayGridMonth',
+                  //height: 'auto',
+                  contentHeight : 600,
+                  
+                  timeZone: 'local',
+                  expandRows: true,
+                  displayEventTime: false,
+                  editable: false,
+                  displayEventTime: false,
+                     dayHeaderContent: function (date) {
+                     let weekList = ["일", "월", "화", "수", "목", "금", "토"];
+                     return weekList[date.dow];
+                     },
+                  showNonCurrentDates : false, //해당 월만 보이게함
+                  fixedWeekCount : false, //6주로 고정할 것인지
+                  headerToolbar : {
+                     start   : '',
+                     center   : 'prev,title,next',
+                     end      : 'today'
+                  },
+                  titleFormat: function (date) {
+                     return `${date.date.year}년 ${date.date.month + 1}월`;
+                     },
+                  events: function(fetchInfo, successCallback, failureCallback) {
+                     let calendarYear = (fetchInfo.start).getFullYear();
+                        let calendarMonth = (fetchInfo.start).getMonth() + 1;
+                  console.log(fetchInfo)
+                  console.log(calendarMonth)
+                  
+                  }
+               });
+               calendar.render();
            });
 
            
@@ -36,49 +71,7 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
-   let calendarEl = document.getElementById('calendar');
 
-   let calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-      //height: 'auto',
-      contentHeight : 600,
-      
-      timeZone: 'local',
-      expandRows: true,
-      displayEventTime: false,
-      editable: false,
-      displayEventTime: false,
-         dayHeaderContent: function (date) {
-           let weekList = ["일", "월", "화", "수", "목", "금", "토"];
-           return weekList[date.dow];
-         },
-      showNonCurrentDates : false, //해당 월만 보이게함
-      fixedWeekCount : false, //6주로 고정할 것인지
-      headerToolbar : {
-         start   : '',
-         center   : 'prev,title,next',
-         end      : 'today'
-      },
-      titleFormat: function (date) {
-           return `${date.date.year}년 ${date.date.month + 1}월`;
-         },
-    /*datesSet: function() {
-            todayStr = calendar.getDate();
-            calendarYear = todayStr.getFullYear();
-            calendarMonth = todayStr.getMonth()+1;
-            calendarDay = todayStr.getDate();
-            //console.log(calendarMonth)
-            
-        },*/
-      events: function(fetchInfo, successCallback, failureCallback) {
-          let calendarYear = (fetchInfo.start).getFullYear();
-            let calendarMonth = (fetchInfo.start).getMonth() + 1;
-        console.log(fetchInfo)
-        console.log(calendarMonth)
-        
-      }
-   });
-   calendar.render();
 });
 
         </script>
