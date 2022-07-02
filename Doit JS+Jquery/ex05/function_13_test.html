@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    /* 다음은 TestScore 객체 생성자에 대한 설명입니다.
+    1. 객체 생성자 함수를 만들어 두학생의 객체를 생성하고 속성으로 이름, 국어점수, 영어점수를 등록했습니다.
+    2. 그런 다음 getTestInfo(), getAvg() 함수도 등록했습니다.
+
+    - 객체를 생성하면 prototype 으로 함수를 등록
+    - getTestInfo()함수를 실행하면 이름, 국어, 영어 정보를 출력하도록 작성
+    - getAvg() 함수를 실행하면 평균 점수를 출력하도록 작성
+    */
+
+    function TestScore(name, kor, eng) {
+        this.userName = name;
+        this.korNum = kor;
+        this.engNum = eng;
+    }
+
+    TestScore.prototype.getTestInfo = function() {
+        document.write("이름: " + this.userName, "<br>");
+        document.write("국어: " + this.korNum, "<br>");
+        document.write("영어: " + this.engNum, "<br>");
+    }
+
+    TestScore.prototype.getAvg = function() {
+        return (this.korNum + this.engNum) / 2;
+    }
+
+    let kimgun = new TestScore("김군", 80, 90);
+    let ohgun = new TestScore("오군", 100, 80);
+
+    kimgun.getTestInfo();
+    document.write("평균점수" + kimgun.getAvg(), "<br><br>");
+
+    ohgun.getTestInfo();
+    document.write("평균점수" + ohgun.getAvg(), "<br><br>");
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*재귀함수
+        함수 정의문 내에서 작성한 코드로 함수를 다시 호출하는 것을 재귀함수 호출이라 한다.
+        기본형
+        function myFnc() {
+            자바스크립트 코드
+            myFnc();
+        }
+        myFnc();
+        */
+
+        let num = 0;
+        
+        function testFnc() {
+            num++;
+            
+            document.write(num, "<br>");
+            if (num == 10) return;
+
+            testFnc();
+            
+        }
+        testFnc();
+    </script>
+</body>
+</html>

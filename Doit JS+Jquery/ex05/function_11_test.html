@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /* 메모리 절약을 위한 프로토타입
+            객체 생성자 함수를 선언하여 객체를 생성하면 객체를 생성한 만큼 함수가 등록된다.
+            프로토타입을 사용하여 함수를 등록하면 메모리 낭비를 줄일 수 있다.
+            프로토타입을 사용하여 등록한 함수는 원형에서 생성된 객체를 공유할 수 있다.
+            즉 여러 개의 함수를 등록할 필요가 없다.
+
+            기본형
+            function 함수명(매개변수1, 매개변수2, ... 매개변수n) {
+                this.속성명 = 새 값;
+            }
+            함수명.prototype.함수명 = function() {
+                코드
+            }
+
+            let 참조변수(인스턴스 네임) = new 함수명();
+        */
+
+        function CheckWeight(name, height, weight) {
+            this.userName = name;
+            this.userHeight = height;
+            this.userWeight = weight;
+            this.minWeight;
+            this.maxWeight;
+        };
+
+        CheckWeight.prototype.getInfo = function() {
+            let str = "";
+            str += "이름: "+ this.userName + ", ";
+            str += "키: " + this.userHeight + ", ";
+            str += "몸무게: " + this.userWeight + "<br>";
+            return str;
+        };
+        
+        CheckWeight.prototype.getResult = function() {
+            this.minWeight = (this.userHeight - 100) * 0.9 - 5;
+            this.maxWeight = (this.userHeight - 100) * 0.9 + 5;
+
+            if (this.userWeight >= this.minWeight && this.userWeight <= this.maxWeight) {
+                return "정상 몸무게입니다.";
+            } else if (this.userWeight < this.minWeight) {
+                return "정상 몸무게보다 미달입니다.";
+            } else {
+                return "정상 몸무게보다 초과입니다.";
+            }
+        };
+
+        let jang = new CheckWeight("장보리", 168, 62);
+        let park = new CheckWeight("박달재", 180, 88);
+        console.log(jang);
+        console.log(park);
+
+        document.write(jang.getInfo());
+        document.write(jang.getResult() + "<br>");
+        document.write(park.getInfo());
+        document.write(park.getResult() + "<br>");
+        document.write(jang.getResult === park.getResult); //같은 함수를 사용
+    </script>
+</body>
+</html>
