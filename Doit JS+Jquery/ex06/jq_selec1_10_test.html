@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+        //형, 동생 요소 선택자
+        /*
+        $("요소 선택").prev(); 요소 선택 기준으로 이전 것
+        $("요소 선택자").next(); 요소 선택 기준으로 뒤에 것
+        $("요소 선택1 + 요소 선택2");
+        */
+        $(function() {
+            let style_1 = {
+                "background-color" : "green",
+                "color" : "white",
+                "border" : "yello 1px dashed"
+            }
+            let style_2 = {
+                "background-color" : "yellow",
+                "color" : "black",
+                "border" : "red solid 1px"
+            }
+
+            $(".txt").prev().css(style_1);
+            $(".txt + p").css(style_2);
+            $(".txt").next().next().css(style_2);
+        });
+    </script>
+    <div id="wrap">
+        <h1 class="tit">인접 관계 선택자</h1>
+        <p>내용1</p>
+        <p class="txt">내용2</p>
+        <p>내용3</p>
+        <p>내용4</p>
+    </div>
+</body>
+</html>
