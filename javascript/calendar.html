@@ -14,145 +14,317 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 </head>
 <body>
-    <script>
-        $(document).ready(function() {
-            $("#dialog-calendar-form").dialog({
-              autoOpen: false,
-              height: 900,
-              width: 1200,
-              modal: true,
-              resizable:false,
-              closeOnEscape: false,
-           });
-           
-           $("#btn_calendar").click(function() {
-              $( "#dialog-calendar-form" ).dialog("open");
-              let calendarEl = document.getElementById('calendar');
+<script>
+$(document).ready(function() {
+   $("#dialog-calendar-form").dialog({
+      autoOpen: false,
+      height: 760,
+      width: 1200,
+      modal: true,
+      resizable:false,
+      closeOnEscape: false,
+   });
+   
+   $("#btn_calendar").click(function() {
+      $( "#dialog-calendar-form" ).dialog("open");
+      
+      let calendarEl = document.getElementById('calendar');
+      let calendar = new FullCalendar.Calendar(calendarEl, {
+         googleCalendarApiKey: 'AIzaSyDa1tOPU6PACDzVMfcVs3qEnLBpHckxzrA', //API Key
+         eventSources: [
+            {
+               googleCalendarId: '5nscfj4tpi916v87htgc5m6np4@group.calendar.google.com', //캘린더 아이디(구글캘린더-내킬랜더-설정및공유-캘린더통합 밑에 캘린더ID - 공개범위 지정)
+               className: 'plan1',
+               color: '#3b6978', 
+            },
+            {
+               googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+               className: 'koHolidays',
+               color: '#be5683',
+            },
+            {
+               googleCalendarId : "ko.usa#holiday@group.v.calendar.google.com",
+               className : "usaHolidays",
+               color : "#0000FF", 
+            }, 
+            {
+               googleCalendarId : "ko.japanese#holiday@group.v.calendar.google.com",
+               className : "jpHolidays",
+               color : "#FF99CC",
+            }
+         ],
+         initialView: 'dayGridMonth',
+         height:650,
+         timeZone: 'local',
+         locale: 'ko',
+         expandRows: true,
+         editable: false,
+         displayEventTime: false,
+         showNonCurrentDates : false, //해당 월만 보이게함
+         fixedWeekCount : false, //6주로 고정할 것인지
+         headerToolbar :{
+            start:'',
+            center:'prev,title,next',
+            end:''
+         },
+         headerToolbar : {
+            start   : '',
+            center   : 'prev,title,next',
+            end      : 'today'
+         },
+         events: function(fetchInfo, successCallback, failureCallback) {
+            let calendarYear = (fetchInfo.start).getFullYear();
+            let calendarMonth = ("0" + ((fetchInfo.start).getMonth() + 1)).slice(-2);
 
-               let calendar = new FullCalendar.Calendar(calendarEl, {
-               initialView: 'dayGridMonth',
-                  //height: 'auto',
-                  contentHeight : 600,
-                  
-                  timeZone: 'local',
-                  expandRows: true,
-                  displayEventTime: false,
-                  editable: false,
-                  displayEventTime: false,
-                     dayHeaderContent: function (date) {
-                     let weekList = ["일", "월", "화", "수", "목", "금", "토"];
-                     return weekList[date.dow];
-                     },
-                  showNonCurrentDates : false, //해당 월만 보이게함
-                  fixedWeekCount : false, //6주로 고정할 것인지
-                  headerToolbar : {
-                     start   : '',
-                     center   : 'prev,title,next',
-                     end      : 'today'
-                  },
-                  titleFormat: function (date) {
-                     return `${date.date.year}년 ${date.date.month + 1}월`;
-                     },
-                  events: function(fetchInfo, successCallback, failureCallback) {
-                     let calendarYear = (fetchInfo.start).getFullYear();
-                        let calendarMonth = (fetchInfo.start).getMonth() + 1;
-                  console.log(fetchInfo)
-                  console.log(calendarMonth)
-                  
-                  }
-               });
-               calendar.render();
-           });
+            // $.doPost({
+            //    url   : "/admin/getMemberBirthdayList",
+            //    data : {
+            //       calendarYear : calendarYear,
+            //       calendarMonth : calendarMonth
+            //    },
+            //    success: function(result) {
+            //       //console.log(result)
+            //       let events = [];
+            //       $.each(result.memberBirthdayList, function(index, memberBirthdayList) {
+            //          events.push({
+            //             id     : memberBirthdayList.user_id,
+            //             title : memberBirthdayList.title,
+            //             start : memberBirthdayList.start,
+            //             end : memberBirthdayList.end + 'T23:59:59'
+            //          });
+            //       })
+            //    successCallback(events);
+            //    }// success END
+            // });
+         },
+         eventClick : function (info) {
+            if (info.event.url) { //구글로 이동 막음
+               info.jsEvent.preventDefault();
+               return;
+            }
+            
+            memberId = info.event._def.publicId;
+            // $( "#dialog-memberInfo-form" ).dialog("open");
+            
+            // $.doPost({
+            //    url   : "/admin/getMemberInfo",
+            //    data : { memberId : memberId },
+            //    success: function(result) {
+            //       let memberInfo = result.memberInfo[0];
+            //       $("#info_name").html(memberInfo.user_nm);
+            //       $("#info_id").html(memberInfo.user_id);
+            //       $("#info_grade").html(memberInfo.grade);
+            //       $("#info_lastOrderDate").html((memberInfo.last_order_date).substring(0, 10));
+            //       $("#total_order_amount").html((memberInfo.total_order_amount).toLocaleString('ko-KR') + "원");
+            //       $("#info_callNum").html(memberInfo.tel_no);
+            //       $("#info_address1").html(memberInfo.address1 + memberInfo.address2);
+            //    }// success END
+            // });
+         }
+      });
+      calendar.render();
+      
+    //   let div = '<div class="calendar_control_panel">'
+    //      div+= '<div class="form-check form-check-inline">';
+    //      div+= '<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="all" checked>';
+    //      div+= '<label class="form-check-label" for="inlineRadio1">전체</label>';
+    //      div+= '</div>';
+    //      div+= '<div class="form-check form-check-inline">';
+    //      div+= '<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="plan1">';
+    //      div+= '<label class="form-check-label" for="inlineRadio2">plan1</label>';
+    //      div+= '</div>';
+    //      div+= '<div class="form-check form-check-inline">';
+    //      div+= '<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="koHolidays">';
+    //      div+= '<label class="form-check-label" for="inlineRadio3">한국 공휴일</label>';
+    //      div+= '</div>';
+    //      div+= '<div class="form-check form-check-inline">';
+    //      div+= '<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="usaHolidays">';
+    //      div+= '<label class="form-check-label" for="inlineRadio4">미국 공휴일</label>';
+    //      div+= '</div>';
+    //      div+= '<div class="form-check form-check-inline">';
+    //      div+= '<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="jpHolidays">';
+    //      div+= '<label class="form-check-label" for="inlineRadio5">일본 공휴일</label>';
+    //      div+= '</div>';
+    //      div+= '</div>';
+    //   $(div).insertAfter('.fc-header-toolbar.fc-toolbar');
+      
+    //   $('input[type=radio]').on('change',function(e){
+    //      checkedInput = $(this).val()
+    //         //$('input[name="inlineRadioOptions"]:checked').val();
+         
+    //      if (checkedInput == 'all') {
+    //         $(".plan1").show();
+    //         $(".koHolidays").show();
+    //         $(".usaHolidays").show();
+    //         $(".jpHolidays").show();
+    //      }
+         
+    //      if (checkedInput == 'plan1') {
+    //         $(".plan1").show();
+    //         $(".koHolidays").hide();
+    //         $(".usaHolidays").hide();
+    //         $(".jpHolidays").hide();
+    //      }
+         
+    //      if (checkedInput == 'koHolidays') {
+    //         $(".plan1").hide();
+    //         $(".koHolidays").show();
+    //         $(".usaHolidays").hide();
+    //         $(".jpHolidays").hide();
+    //      }
+      
+    //   if (checkedInput == 'usaHolidays') {
+    //         $(".plan1").hide();
+    //         $(".koHolidays").hide();
+    //         $(".usaHolidays").show();
+    //         $(".jpHolidays").hide();
+    //   }
+         
+    //      if (checkedInput == 'jpHolidays') {
+    //         $(".plan1").hide();
+    //         $(".koHolidays").hide();
+    //         $(".usaHolidays").hide();
+    //         $(".jpHolidays").show();
+    //      }
+    //   });
+   });
+   
+//    $("#dialog-memberInfo-form").dialog({
+//       autoOpen: false,
+//       height: 370,
+//       width: 500,
+//       modal: true,
+//       resizable:false,
+//       closeOnEscape: false,
+//    });
+}); //$(document).ready END
 
-           
-           
-        })
-        
 
+</script>
 
-document.addEventListener('DOMContentLoaded', function() {
+<style>
+   .fc-daygrid-event{
+      height:25px !important;
+      margin-top:1px !important;
+      margin-bottom:1px !important;
+   }
+   
+   .fc-view-harness-active > .fc-view{
+      margin-top:0px !important;
+   }
+   
+   .fc-prev-button{
+      float:left !important;
+      margin-right:5px !important;
+      height:30px !important;
+   }
+   
+   .fc-next-button{
+      float:left !important;
+      margin-left:5px !important;
+      height:30px !important;
+   }
+   
+   .fc-prev-button span,.fc-next-button span{
+      line-height: 15px;
+   }
+   
+   .fc-toolbar-title{
+      float:left !important;
+   }
+   
+   .fc-header-toolbar{
+      margin-top:5px !important;
+      margin-bottom:5px !important;
+   }
+   
+   .fc-event-title{
+      text-align:left;
+   }
+   
+   .calendar_control_panel{
+      width:100%;
+      height:20px;
+   }
+   
+   .fc-col-header{
+      width:100%;
+   }
+   
+   .list-group-item:first-child{
+      border-top-left-radius: 0;
+       border-top-right-radius: 0;
+   }
+   
+   .list-group-item:last-child{
+      border-bottom-right-radius: 0;
+       border-bottom-left-radius: 0;
+       height:60px;
+   }
+   
+   .list-group.label .list-group-item{
+      background-color:#fbfafa;
+   }
+   
+   .list-group-item{
+      padding:10px;
+      height:40px;
+   }
+</style>
 
-});
+<div class="content-wrap">
+   <div class="main">
+      <div class="container-fluid">
+         <section id="main-content">
+            <div class="row">
+               <div class="col-lg-12">
+                  <div class="card">
+                     <div class="card-title">
+                        <h3 class="float-left">회원 관리</h3>
+                        <div class="button-list float-right">
+                           <button id="btn_get" type="button" class="btn btn-default m-b-10 m-l-5 float-left">조회</button>
+                           <button id="btn_download" type="button" class="btn btn-default m-b-10 m-l-5 float-left">다운로드</button>
+                           <button id="btn_upload" type="button" class="btn btn-default m-b-10 m-l-5 float-left">업로드</button>
+                           <button id="btn_calendar" type="button" class="btn btn-default m-b-10 m-l-5 float-left">생일 캘린더</button>
+                        </div>
+                     </div>
+                     
+                     <div class="card-body">
+                        <div class="row search">
+                           <div class="col-sm-3">
+                              <span class="search-label float-left">ID</span>
+                              <input type="text" id="input_id" class="form-control form-control-sm" placeholder="ID를 입력해주세요"/>
+                           </div>
+                           <div class="col-sm-3">
+                              <span class="search-label float-left">회원명</span>
+                              <input type="text" id="input_name" class="form-control form-control-sm" placeholder="이름을 입력해주세요"/>
+                           </div>
+                           <div class="col-sm-3">
+                              <span class="search-label float-left">등급</span>
+                              <select id="select_grade" class="form-control form-control-sm">
+                              </select>
+                           </div>
+                           <div class="col-sm-3">
+                              <span class="search-label float-left">주소</span>
+                              <input type="text" id="input_address" class="form-control form-control-sm" placeholder=""/>
+                           </div>
+                        </div>
+                        <div class="grid-description">최근 업로드 일자 : <span id="last_upload_dt"></span></div>
+                        <div id="sbGridArea"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </div>
+   </div>
+   <input id="fileInput" type="file" style="display:none;">
+</div>
 
-        </script>
-
-    <div class="content-wrap">
-    <div class="main">
-       <div class="container-fluid">
-          <section id="main-content">
-             <div class="row">
-                <div class="col-lg-12">
-                   <div class="card">
-                      <div class="card-title">
-                         <h3 class="float-left">회원 관리</h3>
-                         <div class="button-list float-right">
-                            <button id="btn_get" type="button" class="btn btn-default m-b-10 m-l-5 float-left">조회</button>
-                            <button id="btn_download" type="button" class="btn btn-default m-b-10 m-l-5 float-left">다운로드</button>
-                            <button id="btn_upload" type="button" class="btn btn-default m-b-10 m-l-5 float-left">업로드</button>
-                            <button id="btn_calendar" type="button" class="btn btn-default m-b-10 m-l-5 float-left">생일 캘린더</button>
-                            <button id="my-today-button" type="button" class="btn btn-default m-b-10 m-l-5 float-left">날짜</button>
-                         </div>
-                      </div>
-                      <div class="card-body">
-                         <div class="row search">
-                            <div class="col-sm-3">
-                               <span class="search-label float-left">ID</span>
-                               <input type="text" id="input_id" class="form-control form-control-sm" placeholder="ID를 입력해주세요"/>
-                            </div>
-                            <div class="col-sm-3">
-                               <span class="search-label float-left">회원명</span>
-                               <input type="text" id="input_name" class="form-control form-control-sm" placeholder="이름을 입력해주세요"/>
-                            </div>
-                            <div class="col-sm-3">
-                               <span class="search-label float-left">등급</span>
-                               <select id="select_grade" class="form-control form-control-sm">
-                               </select>
-                            </div>
-                            <div class="col-sm-3">
-                               <span class="search-label float-left">주소</span>
-                               <input type="text" id="input_address" class="form-control form-control-sm" placeholder=""/>
-                            </div>
-                         </div>
-                         <div id="sbGridArea"></div>
-                      </div>
-                   </div>
-                </div>
-             </div>
-          </section>
-       </div>
-    </div>
-    
-    <input id="fileInput" type="file" style="display:none;">
- </div>
- <style>
- #calendarDiv {
-    width : 100%;
-    height : 100%;
- }
- /*.fc-header-toolbar, fc-daygrid-body {
-    margin : 0px;
- }*/
- .fc .fc-toolbar.fc-header-toolbar {
-    margin-bottom: 10px;
- }
- .fc-col-header {
-    width : 100%;
- }
- .fc-header-toolbar > .fc-toolbar-chunk > div {
-    display: flex;
-    align-items: center;
- }
- .fc-header-toolbar > .fc-toolbar-chunk > div >.fc-toolbar-title {
-    margin: 0px 10px;
- }
- </style>
- <div class="dialog-pop" id="dialog-calendar-form" title="회원 생일 캘린더">
-    <div id="calendarDiv">
-       <div id="calendar"></div>
-    </div>
- </div>
-
-
-    
+<div class="dialog-pop" id="dialog-calendar-form" title="회원 생일 캘린더">
+   <div id="calendarDiv">
+      <div id="calendar"></div>
+   </div>
+</div>
 </body>
 </html>
