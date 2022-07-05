@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+        //nth-child(숫자n) / nth-last-of-type(숫자) 선택자
+        //$("요소 선택:nth-child(숫자)"); 선택한 요소 중 지정한 숫자에 위치한 요소를 선택
+        //$("요소 선택:nth-child(숫자n)"); 선택한 요소 중 지정한 배수에 위치한 요소를 선택
+        //$("요소 선택:nth-last-child(숫자)"); 선택한 요소 중 마지막 위치에서 지정한 숫자에 위치한 요소를 선택
+        $(function() {
+            $("#menu1 li:nth-child(1)").css({"background-color" : "#ff0", "color" : "red"});
+
+            $("#menu1 li:nth-child(2n)").css({"background-color" : "green", "color" : "white"});
+
+            $("#menu2 li:nth-last-child(2)").css({"background-color" : "orange", "color" : "white"});
+        })
+    </script>
+
+    <h1>탐색 선택자</h1>
+    <ul id="menu1">
+        <li>내용1-1</li>
+        <li>내용1-2</li>
+        <li>내용1-3</li>
+        <li>내용1-4</li>
+    </ul>
+
+    <ul id="menu2">
+        <li>내용2-1</li>
+        <li>내용2-2</li>
+        <li>내용2-3</li>
+    </ul>
+</body>
+</html>
