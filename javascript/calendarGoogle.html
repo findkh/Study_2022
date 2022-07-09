@@ -11,10 +11,7 @@
    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
    <script src="//code.jquery.com/jquery.min.js"></script>
    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-   <!-- //<script src='rrule@fullcalendar5.5.0.js'></script> 
-   https://fullcalendar.io/docs/rrule-plugin
-   
-   -->
+
    <!-- rrule lib -->
    <script src='https://cdn.jsdelivr.net/npm/rrule@2.6.4/dist/es5/rrule.min.js'></script>
    <!-- the rrule-to-fullcalendar connector. must go AFTER the rrule lib -->
@@ -23,14 +20,12 @@
 <body>
 
    <script>
-      let nextSyncToken;
-      let nextPageToken;
+      //월별로 가져오기//
       let calendar;
       let events=[];
-      //let events= new Set();
       let access_token;
       let timeMax;
-      let timeMin; //달력 시작점
+      let timeMin;
       let requestMonth = new Set();
       let savedCalendar = new Set();
 
@@ -49,8 +44,8 @@
       }
            
       if (Object.keys(params).length > 0) {
-         localStorage.setItem('oauth2-test-params', JSON.stringify(params) );
-            if (params['state'] && params['state'] == 'try_sample_request') {
+         localStorage.setItem('oauth2-params', JSON.stringify(params) );
+            if (params['state'] && params['state'] == 'requestCalendarList') {
                getUserCalendarList(); //캘린더 ID 수집
             }
       } else { //쿼리스트링이 없으면 oauth2 로그인함
@@ -78,7 +73,6 @@
                hour12: false,
                meridiem: false
             },
-            showNonCurrentDates : false, //이벤트가 중복되어 쌓이는 문제 때문에 해당 월만 보이게함
             nowIndicator: true, // 현재 시간 마크        
             dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
             events : [],
@@ -90,14 +84,13 @@
             },
          });
          calendar.render();
-         
+
          //처음 렌더링할 때 값
-         timeMin = getFormatDate(calendar.view.activeStart);
-         timeMax = getFormatDate(calendar.view.activeEnd);
+         console.log(calendar.view)
+         timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
+         timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
          requestMonth.add(timeMin);
          requestMonth.add(timeMax);
-         console.log(timeMin)
-            console.log(timeMax)
 
          //이전 버튼 클릭했을 때 값
          $('.fc-prev-button').click(function() {
@@ -123,7 +116,7 @@
                getUserCalendarList();
             }
          });
-         console.log(requestMonth)
+
       });
       
       //날짜 format fn
@@ -139,7 +132,7 @@
       // If there's an access token, try an API request.
       // Otherwise, start OAuth 2.0 flow.      
       //쿼리 스트링 순서 주의(optional parameters 다음에 accesstoken), timeMax,timeMin -> URL encoding 하기
-      function trySampleRequest(calendarId,color) {
+      function calendarListRequest(calendarId, color) {
          let xhr = new XMLHttpRequest();
          xhr.open('GET',
             'https://www.googleapis.com/calendar/v3/calendars/'+calendarId+'/events?' +
@@ -159,8 +152,6 @@
 
                   if(!savedCalendar.has(item.id)) {
                      if (item.end.dateTime != null || item.start.dateTime != null) {
-                        console.log("item.end.dateTime != null || item.start.dateTime != null")
-                        console.log(item)
                         if(item.recurrence != null) {
                            calendar.addEvent({
                               groupid : item.organizer.email,
@@ -170,7 +161,7 @@
                               end      : item.end.dateTime,
                               color   : color,
                               url      : item.htmlLink,
-                              textColor : 'black',
+                              textColor : 'white',
                               rrule:  (item.recurrence[0]).split(':')[1]
                            });
                         } else {
@@ -182,11 +173,10 @@
                               end      : item.end.dateTime,
                               color   : color,
                               url      : item.htmlLink,
+                              textColor : 'white',
                            });
                         }
                      } else {
-                        console.log("아님")
-                        console.log(item)
                         calendar.addEvent({
                               groupid : item.organizer.email,
                               id      : item.id,
@@ -195,7 +185,7 @@
                               end      : item.end.date,
                               color   : color,
                               url      : item.htmlLink,
-                              textColor : 'black',
+                              textColor : 'white',
                            });
                      }
                   }
@@ -219,11 +209,11 @@
          form.setAttribute('method', 'GET'); // Send as a GET request.
          form.setAttribute('action', oauth2Endpoint);
       
-         // Parameters to pass to OAuth 2.0 endpoint. 'redirect_uri': 'http://localhost:8081/login/oauth2/code/google',
+         // Parameters to pass to OAuth 2.0 endpoint.
          let params = {'client_id': '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com',
                      'redirect_uri': 'http://localhost:5500/javascript/calendarGoogle.html',
                      'scope': 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
-                     'state': 'try_sample_request',
+                     'state': 'requestCalendarList',
                      'include_granted_scopes': 'true',
                      'response_type': 'token'};
       
@@ -243,7 +233,7 @@
       
       //소유한 구글 캘린더 id 수집 fn
       function getUserCalendarList() {
-         let params = JSON.parse(localStorage.getItem('oauth2-test-params')); //로컬 스토리지에 access_token이 확인
+         let params = JSON.parse(localStorage.getItem('oauth2-params')); //로컬 스토리지에 access_token이 확인
          access_token = params['access_token'];
       
          if (params && params['access_token']) { //로컬 스토리지에 access_token이 확인
@@ -258,7 +248,7 @@
                   //console.log(result)
                   //let cnt = 0;
                   result.items.forEach(item => {
-                     trySampleRequest(item.id.replace('#', '%23'), item.backgroundColor);
+                     calendarListRequest(item.id.replace('#', '%23'), item.backgroundColor);
                   })
       
                } else if (xhr.readyState === 4 && xhr.status === 401) { // Token invalid, so prompt for user permission.
