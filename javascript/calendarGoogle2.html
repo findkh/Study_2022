@@ -65,7 +65,7 @@
             headerToolbar :{
                start:'',
                center:'prev,title,next',
-               end: ''
+               end:''
             },
             eventTimeFormat: {
                hour: '2-digit',
@@ -73,7 +73,6 @@
                hour12: false,
                meridiem: false
             },
-            //showNonCurrentDates : false,
             nowIndicator: true, // 현재 시간 마크        
             dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
             events : [],
@@ -83,16 +82,10 @@
                   info.jsEvent.preventDefault();
                }
             },
-            dayMaxEventRows: true,
-            views: {
-               timeGrid: {
-                  dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
-               }
-            }
          });
          calendar.render();
-         console.log(calendar.view.currentEnd)
-         //처음 렌더링할 때 시작 값과 끝 값
+
+         //처음 렌더링할 때 값
          console.log(calendar.view)
          timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
          timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
@@ -101,8 +94,8 @@
 
          //이전 버튼 클릭했을 때 값
          $('.fc-prev-button').click(function() {
-            timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
-         timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
+            timeMin = getFormatDate(calendar.view.activeStart);
+            timeMax = getFormatDate(calendar.view.activeEnd);
             if (!requestMonth.has(timeMin)) {
                requestMonth.add(timeMin);
                requestMonth.add(timeMax);
@@ -110,10 +103,9 @@
             }
          });
       
-         //다음 버튼 클릭했을 때 값
          $('.fc-next-button').click(function() {
-            timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
-         timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
+            timeMin = getFormatDate(calendar.view.activeStart);
+            timeMax = getFormatDate(calendar.view.activeEnd);
             console.log(timeMin)
             console.log(timeMax)
             //console.log(requestMonth)
@@ -140,7 +132,7 @@
       // If there's an access token, try an API request.
       // Otherwise, start OAuth 2.0 flow.      
       //쿼리 스트링 순서 주의(optional parameters 다음에 accesstoken), timeMax,timeMin -> URL encoding 하기
-      function calendarEventRequest(calendarId, color) {
+      function calendarListRequest(calendarId, color) {
          let xhr = new XMLHttpRequest();
          xhr.open('GET',
             'https://www.googleapis.com/calendar/v3/calendars/'+calendarId+'/events?' +
@@ -149,7 +141,7 @@
          xhr.onreadystatechange = function (e) {
             if (xhr.readyState === 4 && xhr.status === 200) { // 성공시
                let result = JSON.parse(xhr.response);
-               console.log(result)
+
                //달력에 표시된 이벤트의 id를 set 배열에 넣음
                let savedcalendarList = calendar.getEvents();
                savedcalendarList.forEach(item => {
@@ -157,29 +149,24 @@
                });
                   //console.log(savedCalendar)
                result.items.forEach(item => {
+
                   if(!savedCalendar.has(item.id)) {
                      if (item.end.dateTime != null || item.start.dateTime != null) {
                         if(item.recurrence != null) {
-                           let dayArr = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-                           let rule = (item.recurrence[0]).split(':')[1].split(';');
-                           console.log(rule[0])
-
                            calendar.addEvent({
+                              groupid : item.organizer.email,
                               id      : item.id,
                               title   : item.summary,
-                              //start   : item.start.dateTime,
-                              //end      : item.end.dateTime,
-                              startTime : item.start.dateTime.split('T')[1],
-                              endTime : item.end.dateTime.split('T')[1],
-                              daysOfWeek : ['0'],
+                              start   : item.start.dateTime,
+                              end      : item.end.dateTime,
                               color   : color,
                               url      : item.htmlLink,
                               textColor : 'white',
-                              //rrule:  (item.recurrence[0]).split(':')[1],
-                              //allDay : false
+                              rrule:  (item.recurrence[0]).split(':')[1]
                            });
                         } else {
                            calendar.addEvent({
+                              groupid : item.organizer.email,
                               id      : item.id,
                               title   : item.summary,
                               start   : item.start.dateTime,
@@ -191,6 +178,7 @@
                         }
                      } else {
                         calendar.addEvent({
+                              groupid : item.organizer.email,
                               id      : item.id,
                               title   : item.summary,
                               start   : item.start.date,
@@ -201,6 +189,10 @@
                            });
                      }
                   }
+
+
+                  
+
                })
             }
          }
@@ -256,7 +248,7 @@
                   //console.log(result)
                   //let cnt = 0;
                   result.items.forEach(item => {
-                     calendarEventRequest(item.id.replace('#', '%23'), item.backgroundColor);
+                     calendarListRequest(item.id.replace('#', '%23'), item.backgroundColor);
                   })
       
                } else if (xhr.readyState === 4 && xhr.status === 401) { // Token invalid, so prompt for user permission.
