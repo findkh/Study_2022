@@ -18,316 +18,400 @@
    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@5.5.0/main.global.min.js'></script>
 </head>
 <body>
-
-   <script>
-      //월별로 가져오기//
-      let calendar;
-      let events=[];
-      let access_token;
-      let timeMax;
-      let timeMin;
-      let requestMonth = new Set();
-      let savedCalendar = new Set();
-
+      <script>
+         //월별로 가져오기//
+         let calendar;
+         let events=[];
+         let access_token;
+         let timeMax;
+         let timeMin;
+         let requestMonth = new Set();
+         let savedCalendar = new Set();
+   
+         //const YOUR_CLIENT_ID = '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com'; //클라이언트 아이디
+         //const YOUR_REDIRECT_URI = 'http://localhost:8081'; //리다이렉트 url oauth 클라이언트에서 설정한 것과 같아야함
+         
       const YOUR_CLIENT_ID = '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com'; //클라이언트 아이디
       const YOUR_REDIRECT_URI = 'http://localhost:5500/javascript/calendarGoogle.html'; //리다이렉트 url oauth 클라이언트에서 설정한 것과 같아야함
       
-      let fragmentString = location.hash.substring(1);
-      let params = {};
-      let regex = /([^&=]+)=([^&]*)/g, m;
-      /* 
-      Flag -> g :  Global search
-      exec() : 정규표현식과 일치하는 문자열을 찾아서 배열을 리턴*/
-      
-      while (m = regex.exec(fragmentString)) { //쿼리 스트링의 access token을 찾을 때까지 반복함
-         params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-      }
-           
-      if (Object.keys(params).length > 0) {
-         localStorage.setItem('oauth2-params', JSON.stringify(params) );
-            if (params['state'] && params['state'] == 'requestCalendarList') {
-               getUserCalendarList(); //캘린더 ID 수집
-            }
-      } else { //쿼리스트링이 없으면 oauth2 로그인함
-            oauth2SignIn();
-      }
-      
-      $(document).ready(function() {
-         let calendarEl = document.getElementById('calendar');
-         let calendarList = [];
-         calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            //themeSystem: 'bootstrap', //부트스트랩 테마
-            height: 850,
-            timeZone: 'local',
-            locale: 'ko',
-            fixedWeekCount:false,
-            headerToolbar :{
-               start:'',
-               center:'prev,title,next',
-               end: ''
-            },
-            eventTimeFormat: {
-               hour: '2-digit',
-               minute: '2-digit',
-               hour12: false,
-               meridiem: false
-            },
-            //showNonCurrentDates : false,
-            nowIndicator: true, // 현재 시간 마크        
-            dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
-            events : [],
-            eventClick: function(info) { //이벤트 클릭하면 구글 캘린더로 이동(새탭)
-               if (info.event.url) {
-                  window.open(info.event.url);
-                  info.jsEvent.preventDefault();
-               }
-            },
-            dayMaxEventRows: true,
-            views: {
-               timeGrid: {
-                  dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
-               }
-            }
-         });
-         calendar.render();
-         console.log(calendar.view.currentEnd)
-         //처음 렌더링할 때 시작 값과 끝 값
-         console.log(calendar.view)
-         timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
-         timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
-         requestMonth.add(timeMin);
-         requestMonth.add(timeMax);
 
-         //이전 버튼 클릭했을 때 값
-         $('.fc-prev-button').click(function() {
-            timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
-         timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
-            if (!requestMonth.has(timeMin)) {
-               requestMonth.add(timeMin);
-               requestMonth.add(timeMax);
-               getUserCalendarList();
-            }
-         });
-      
-         //다음 버튼 클릭했을 때 값
-         $('.fc-next-button').click(function() {
-            timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
-         timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
-            console.log(timeMin)
-            console.log(timeMax)
-            //console.log(requestMonth)
-            if (requestMonth.has(timeMin) == false) {
-               console.log("실행됨")
-               requestMonth.add(timeMin);
-               requestMonth.add(timeMax);
-               getUserCalendarList();
-            }
-         });
-
-      });
-      
-      //날짜 format fn
-      function getFormatDate(date){
-         let year = date.getFullYear();
-         let month = (1 + date.getMonth());
-            month = month >= 10 ? month : '0' + month;
-         let day = date.getDate();
-            day = day >= 10 ? day : '0' + day;
-         return  year + '-' + month + '-' + day;
-      }
-      
-      // If there's an access token, try an API request.
-      // Otherwise, start OAuth 2.0 flow.      
-      //쿼리 스트링 순서 주의(optional parameters 다음에 accesstoken), timeMax,timeMin -> URL encoding 하기
-      function calendarEventRequest(calendarId, color) {
-         let xhr = new XMLHttpRequest();
-         xhr.open('GET',
-            'https://www.googleapis.com/calendar/v3/calendars/'+calendarId+'/events?' +
-            'timeMax='+timeMax+'T23%3A59%3A59%2B09%3A00'+'&timeMin='+timeMin+'T00%3A00%3A00%2B09%3A00'+'&'+'access_token='+access_token);
-            
-         xhr.onreadystatechange = function (e) {
-            if (xhr.readyState === 4 && xhr.status === 200) { // 성공시
-               let result = JSON.parse(xhr.response);
-               console.log(result)
-               //달력에 표시된 이벤트의 id를 set 배열에 넣음
-               let savedcalendarList = calendar.getEvents();
-               savedcalendarList.forEach(item => {
-                  savedCalendar.add(item._def.publicId)
-               });
-                  //console.log(savedCalendar)
-               result.items.forEach(item => {
-                  if(!savedCalendar.has(item.id)) {
-                     if (item.end.dateTime != null || item.start.dateTime != null) {
-                        if(item.recurrence != null) {
-                           let dayArr = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-                           let rule = (item.recurrence[0]).split(':')[1].split(';');
-                           console.log(rule[0])
-
-                           calendar.addEvent({
-                              id      : item.id,
-                              title   : item.summary,
-                              //start   : item.start.dateTime,
-                              //end      : item.end.dateTime,
-                              startTime : item.start.dateTime.split('T')[1],
-                              endTime : item.end.dateTime.split('T')[1],
-                              daysOfWeek : ['0'],
-                              color   : color,
-                              url      : item.htmlLink,
-                              textColor : 'white',
-                              //rrule:  (item.recurrence[0]).split(':')[1],
-                              //allDay : false
-                           });
-                        } else {
-                           calendar.addEvent({
-                              id      : item.id,
-                              title   : item.summary,
-                              start   : item.start.dateTime,
-                              end      : item.end.dateTime,
-                              color   : color,
-                              url      : item.htmlLink,
-                              textColor : 'white',
-                           });
-                        }
-                     } else {
-                        calendar.addEvent({
-                              id      : item.id,
-                              title   : item.summary,
-                              start   : item.start.date,
-                              end      : item.end.date,
-                              color   : color,
-                              url      : item.htmlLink,
-                              textColor : 'white',
-                           });
-                     }
-                  }
-               })
-            }
+         let fragmentString = location.hash.substring(1);
+         let params = {};
+         let regex = /([^&=]+)=([^&]*)/g, m;
+         /* 
+         Flag -> g :  Global search
+         exec() : 정규표현식과 일치하는 문자열을 찾아서 배열을 리턴*/
+         
+         while (m = regex.exec(fragmentString)) { //쿼리 스트링의 access token을 찾을 때까지 반복함
+            params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
          }
-            xhr.send(null);  
-      }
+              
+         if (Object.keys(params).length > 0) {
+            localStorage.setItem('oauth2-params', JSON.stringify(params) );
+               if (params['state'] && params['state'] == 'requestCalendarList') {
+                  getUserCalendarList(); //캘린더 ID 수집
+               }
+         } else { //쿼리스트링이 없으면 oauth2 로그인함
+               oauth2SignIn();
+         }
+         
+         $(document).ready(function() {
+            let calendarEl = document.getElementById('calendar');
+            let calendarList = [];
+            calendar = new FullCalendar.Calendar(calendarEl, {
+               initialView: 'dayGridMonth',
+               //themeSystem: 'bootstrap', //부트스트랩 테마
+               height: 850,
+               timeZone: 'local',
+               locale: 'ko',
+               fixedWeekCount:false,
+               headerToolbar :{
+                  start:'',
+                  center:'prev,title,next',
+                  end: ''
+               },
+               eventTimeFormat: {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                  meridiem: false
+               },
+               //showNonCurrentDates : false,
+               nowIndicator: true, // 현재 시간 마크        
+               dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
+               events : [],
+               eventClick: function(info) { //이벤트 클릭하면 구글 캘린더로 이동(새탭)
+                  if (info.event.url) {
+                     window.open(info.event.url);
+                     info.jsEvent.preventDefault();
+                  }
+               },
+               dayMaxEventRows: true,
+            });
+            calendar.render();
+            
+            //처음 렌더링할 때 시작 값과 끝 값
+            //console.log(calendar.view)
+            timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
+            timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
+            requestMonth.add(timeMin);
+            requestMonth.add(timeMax);
+   
+            //이전 버튼 클릭했을 때 값
+            $('.fc-prev-button').click(function() {
+               timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
+            timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
+               if (!requestMonth.has(timeMin)) {
+                  requestMonth.add(timeMin);
+                  requestMonth.add(timeMax);
+                  getUserCalendarList();
+               }
+            });
+         
+            //다음 버튼 클릭했을 때 값
+            $('.fc-next-button').click(function() {
+               timeMin = getFormatDate(calendar.view.activeStart); //달력의 시작 날짜
+            timeMax = getFormatDate(calendar.view.activeEnd); // 달력의 끝 날짜
+               if (requestMonth.has(timeMin) == false) {
+                  //console.log("실행됨")
+                  requestMonth.add(timeMin);
+                  requestMonth.add(timeMax);
+                  getUserCalendarList();
+               }
+            });
+   
       
-      //Create form to request access token from Google's OAuth 2.0 server.
-      function oauth2SignIn() {
-         // Google's OAuth 2.0 endpoint for requesting an access token
-         let oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
-      
-         // Create element to open OAuth 2.0 endpoint in new window.
-         let form = document.createElement('form');
-         form.setAttribute('method', 'GET'); // Send as a GET request.
-         form.setAttribute('action', oauth2Endpoint);
-      
-         // Parameters to pass to OAuth 2.0 endpoint.
-         let params = {'client_id': '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com',
+         });
+         
+         //날짜 format fn
+         function getFormatDate(date){
+            let year = date.getFullYear();
+            let month = (1 + date.getMonth());
+               month = month >= 10 ? month : '0' + month;
+            let day = date.getDate();
+               day = day >= 10 ? day : '0' + day;
+            return  year + '-' + month + '-' + day;
+         }
+         
+         // If there's an access token, try an API request.
+         // Otherwise, start OAuth 2.0 flow.      
+         //쿼리 스트링 순서 주의(optional parameters 다음에 accesstoken), timeMax,timeMin -> URL encoding 하기
+         function calendarEventRequest(calendarId, color) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET',
+               'https://www.googleapis.com/calendar/v3/calendars/'+calendarId+'/events?'+'access_token='+access_token);
+               //'timeMax='+timeMax+'T23%3A59%3A59%2B09%3A00'+'&timeMin='+timeMin+'T00%3A00%3A00%2B09%3A00'+'&'+'access_token='+access_token);
+               
+            xhr.onreadystatechange = function (e) {
+               if (xhr.readyState === 4 && xhr.status === 200) { // 성공시
+                  let result = JSON.parse(xhr.response);
+                  //console.log(result)
+                  //달력에 표시된 이벤트의 id를 set 배열에 넣음
+                  let savedcalendarList = calendar.getEvents();
+                  savedcalendarList.forEach(item => {
+                     savedCalendar.add(item._def.publicId)
+                  });
+                     //console.log(savedCalendar)
+                  result.items.forEach(item => {
+                    
+                     if(!savedCalendar.has(item.id)) {
+                        if (item.end.dateTime != null || item.start.dateTime != null) {
+                           if(item.recurrence != null) {
+   
+                              //console.log(item);
+                              //console.log(item.id);
+                              //console.log(item.summary);
+                              //console.log(item.start.dateTime.split('+')[0]);
+                              
+                              let eventObj = {
+                                 classNames : item.id,
+                                 id      : item.id,
+                                   title   : item.summary,
+                                   color   : color,
+                                   url      : item.htmlLink,
+                                   textColor : 'white',
+                                   rrule : {
+                                      freq      : item.recurrence[0].split(':')[1].split(";")[0].split("=")[1].toLowerCase(),
+                                      dtstart   : item.start.dateTime.split('+')[0]
+                                   }
+                              };
+                              
+                              if(item.recurrence[0].indexOf('UNTIL')>0){
+                                 let recurArray = item.recurrence[0].split(':')[1].split(";");
+                                 //console.log(recurArray)
+                                 recurArray.forEach(rec => {
+                                   if(rec.indexOf("UNTIL")>-1){
+                                      eventObj.rrule.until=rec.split("=")[1].split("T")[0];
+                                   } 
+                                 });
+                              }
+                              calendar.addEvent(eventObj);
+                           } else {
+                              /*
+                              calendar.addEvent({
+                                 id      : item.id,
+                                 title   : item.summary,
+                                 start   : item.start.dateTime,
+                                 end      : item.end.dateTime,
+                                 color   : color,
+                                 url      : item.htmlLink,
+                                 textColor : 'white',
+                              });
+                              */
+                           }
+                        } else {
+                           /*
+                           calendar.addEvent({
+                                 id      : item.id,
+                                 title   : item.summary,
+                                 start   : item.start.date,
+                                 end      : item.end.date,
+                                 color   : color,
+                                 url      : item.htmlLink,
+                                 textColor : 'white',
+                              });
+                           */
+                        }
+                     }
+                  })
+                  
+                  calendarEventRequest2(calendarId, color);
+               }
+            }
+               xhr.send(null);
+               
+         }
+         
+         
+         function calendarEventRequest2(calendarId, color) {
+             let xhr = new XMLHttpRequest();
+             xhr.open('GET',
+                'https://www.googleapis.com/calendar/v3/calendars/'+calendarId+'/events?' +//'&'+'access_token='+access_token);
+                'timeMax='+timeMax+'T23%3A59%3A59%2B09%3A00'+'&timeMin='+timeMin+'T00%3A00%3A00%2B09%3A00'+'&'+'access_token='+access_token);
+                
+             xhr.onreadystatechange = function (e) {
+                if (xhr.readyState === 4 && xhr.status === 200) { // 성공시
+                   let result = JSON.parse(xhr.response);
+                   //console.log(result)
+                   //달력에 표시된 이벤트의 id를 set 배열에 넣음
+                   let savedcalendarList = calendar.getEvents();
+                   savedcalendarList.forEach(item => {
+                      savedCalendar.add(item._def.publicId)
+                   });
+                  
+                   result.items.forEach(item => {
+                      //console.log(item)
+                      
+                      if(!savedCalendar.has(item.id)) {
+                         if (item.end.dateTime != null || item.start.dateTime != null) {
+                            if(item.recurrence != null) {
+                               return false;
+                               
+                            } else {
+                               
+                               if (item.hasOwnProperty("recurringEventId") && item.recurringEventId!=null){ //반복일정이 수정되었을 때
+                               
+                                  let date = item.start.dateTime.split("T")[0]
+                                  console.log();
+                                  $('.fc-daygrid-day[data-date='+date+']').find('.'+item.recurringEventId).closest('div').hide();
+                                  
+                                  console.log($('.fc-daygrid-day[data-date='+date+']').find('.'+ 'fc-daygrid-day-bottom').click())
+                                  
+   
+                               }
+                                   calendar.addEvent({
+                                        id      : item.id,
+                                        title   : item.summary,
+                                        start   : item.start.dateTime,
+                                        end      : item.end.dateTime,
+                                        color   : color,
+                                        url      : item.htmlLink,
+                                        textColor : 'white',
+                                        
+                                     });
+   
+                            }
+                         } else {
+                            
+                            calendar.addEvent({
+                                  id      : item.id,
+                                  title   : item.summary,
+                                  start   : item.start.date,
+                                  end      : item.end.date,
+                                  color   : color,
+                                  url      : item.htmlLink,
+                                  //textColor : 'white',
+                               });
+                            
+                            
+                         }
+                      }
+                   })
+                }
+             }
+                xhr.send(null);  
+          }
+         
+         //Create form to request access token from Google's OAuth 2.0 server.
+         function oauth2SignIn() {
+            // Google's OAuth 2.0 endpoint for requesting an access token
+            let oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+         
+            // Create element to open OAuth 2.0 endpoint in new window.
+            let form = document.createElement('form');
+            form.setAttribute('method', 'GET'); // Send as a GET request.
+            form.setAttribute('action', oauth2Endpoint);
+         
+            // Parameters to pass to OAuth 2.0 endpoint.
+            let params = {'client_id': '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com',
                      'redirect_uri': 'http://localhost:5500/javascript/calendarGoogle.html',
                      'scope': 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
                      'state': 'requestCalendarList',
                      'include_granted_scopes': 'true',
                      'response_type': 'token'};
-      
-         // Add form parameters as hidden input values.
-         for (let p in params) {
-            let input = document.createElement('input');
-            input.setAttribute('type', 'hidden');
-            input.setAttribute('name', p);
-            input.setAttribute('value', params[p]);
-            form.appendChild(input);
-         }
-      
-         // Add form to page and submit it to open the OAuth 2.0 endpoint.
-         document.body.appendChild(form);
-         form.submit();
-      }
-      
-      //소유한 구글 캘린더 id 수집 fn
-      function getUserCalendarList() {
-         let params = JSON.parse(localStorage.getItem('oauth2-params')); //로컬 스토리지에 access_token이 확인
-         access_token = params['access_token'];
-      
-         if (params && params['access_token']) { //로컬 스토리지에 access_token이 확인
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET',
-               'https://www.googleapis.com/calendar/v3/users/me/calendarList?' +
-               'access_token=' + params['access_token']);
-      
-            xhr.onreadystatechange = function (e) {
-               if (xhr.readyState === 4 && xhr.status === 200) { // 성공시
-                  let result = JSON.parse(xhr.response);
-                  //console.log(result)
-                  //let cnt = 0;
-                  result.items.forEach(item => {
-                     calendarEventRequest(item.id.replace('#', '%23'), item.backgroundColor);
-                  })
-      
-               } else if (xhr.readyState === 4 && xhr.status === 401) { // Token invalid, so prompt for user permission.
-                  oauth2SignIn();
-               }
-            };
-            xhr.send();
-         } else {
-            oauth2SignIn();
-         }
-      }
-      
-      </script>
-      
-      
-      <style>
-         a:link {
-         color : black;
-         }
-         .fc-daygrid-event{
-            height:25px !important;
-            margin-top:1px !important;
-            margin-bottom:1px !important;
+         
+            // Add form parameters as hidden input values.
+            for (let p in params) {
+               let input = document.createElement('input');
+               input.setAttribute('type', 'hidden');
+               input.setAttribute('name', p);
+               input.setAttribute('value', params[p]);
+               form.appendChild(input);
+            }
+         
+            // Add form to page and submit it to open the OAuth 2.0 endpoint.
+            document.body.appendChild(form);
+            form.submit();
          }
          
-         .fc-view-harness-active > .fc-view{
-            margin-top:0px !important;
+         //소유한 구글 캘린더 id 수집 fn
+         function getUserCalendarList() {
+            let params = JSON.parse(localStorage.getItem('oauth2-params')); //로컬 스토리지에 access_token이 확인
+            access_token = params['access_token'];
+         
+            if (params && params['access_token']) { //로컬 스토리지에 access_token이 확인
+               let xhr = new XMLHttpRequest();
+               xhr.open('GET',
+                  'https://www.googleapis.com/calendar/v3/users/me/calendarList?' +
+                  'access_token=' + params['access_token']);
+         
+               xhr.onreadystatechange = function (e) {
+                  if (xhr.readyState === 4 && xhr.status === 200) { // 성공시
+                     let result = JSON.parse(xhr.response);
+                     //console.log(result)
+                     //let cnt = 0;
+                     result.items.forEach(item => {
+                        calendarEventRequest(item.id.replace('#', '%23'), item.backgroundColor);
+                     })
+         
+                  } else if (xhr.readyState === 4 && xhr.status === 401) { // Token invalid, so prompt for user permission.
+                     oauth2SignIn();
+                  }
+               };
+               xhr.send();
+            } else {
+               oauth2SignIn();
+            }
          }
          
-         .fc-prev-button{
-            float:left !important;
-            margin-right:5px !important;
-            height:30px !important;
-         }
+         </script>
          
-         .fc-next-button{
-            float:left !important;
-            margin-left:5px !important;
-            height:30px !important;
-         }
          
-         .fc-prev-button span,.fc-next-button span{
-            line-height: 15px;
-         }
-         
-         .fc-toolbar-title{
-            float:left !important;
-         }
-         
-         .fc-header-toolbar{
-            margin-top:5px !important;
-            margin-bottom:5px !important;
-         }
-         
-         .calendar_control_panel{
-            width:100%;
-            height:20px;
-         }
-      </style>
-      <div class="content-wrap">
-          <div class="main">
-              <div class="container-fluid">
-               <div class="row">
-                     <div class="col-lg-12">
-                         <div id="calendar"></div>
-                     </div>
-               </div>
-              </div>
-          </div>
-      </div>
-
-
+         <style>
+            a:link {
+            color : black;
+            }
+            .fc-daygrid-event{
+               height:25px !important;
+               margin-top:1px !important;
+               margin-bottom:1px !important;
+            }
+            
+            .fc-view-harness-active > .fc-view{
+               margin-top:0px !important;
+            }
+            
+            .fc-prev-button{
+               float:left !important;
+               margin-right:5px !important;
+               height:30px !important;
+            }
+            
+            .fc-next-button{
+               float:left !important;
+               margin-left:5px !important;
+               height:30px !important;
+            }
+            
+            .fc-prev-button span,.fc-next-button span{
+               line-height: 15px;
+            }
+            
+            .fc-toolbar-title{
+               float:left !important;
+            }
+            
+            .fc-header-toolbar{
+               margin-top:5px !important;
+               margin-bottom:5px !important;
+            }
+            
+            .calendar_control_panel{
+               width:100%;
+               height:20px;
+            }
+         </style>
+         <div class="content-wrap">
+             <div class="main">
+                 <div class="container-fluid">
+                  <div class="row">
+                        <div class="col-lg-12">
+                            <div id="calendar"></div>
+                        </div>
+                  </div>
+                 </div>
+             </div>
+         </div>
+   
 </body>
 </html>
