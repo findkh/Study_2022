@@ -1,5 +1,3 @@
-package javaStudy100;
-
 public class java100_operator_LogicalOperators {
   public static void main(String args[]) {
     //논리연산자(&&), 이항연산자(||), 단항연산자(!)

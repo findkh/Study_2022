@@ -1,5 +1,3 @@
-package javaStudy100;
-
 public class java100_operator_ArithmeticOperators1 {
   public static void main(String args[]) {
     //수치 연산자 : +, -, *, /, %

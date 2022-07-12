@@ -1,5 +1,3 @@
-package javaStudy100;
-
 public class java100_variable_Datatype1 {
   public static void main(String args[]) {
     int a;

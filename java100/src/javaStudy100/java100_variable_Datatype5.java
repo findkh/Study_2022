@@ -1,5 +1,3 @@
-package javaStudy100;
-
 public class java100_variable_Datatype5 {
   public static void main(String args[]) {
     //정수형(int)을 문자열(String)로 변환하여 정수의 자릿수를 구하는 코드를 구현해보시오.  

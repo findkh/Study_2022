@@ -1,5 +1,3 @@
-package javaStudy100;
-
 public class java100_operator_ArithmeticOperators3 {
   public static void main(String args[]) {
     int a = 60; 

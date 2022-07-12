@@ -1,5 +1,3 @@
-package javaStudy100;
-
 public class valiable_001 {
   public static void main(String[] args) {
     System.out.println(3+7);
