@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+		/*
+		$("요소 선택").addClass("class값"); 요소를 선택하여 지정한 class값을 생성한다.
+		$("요소 선택").removeClass("class값"); 요소를 선택하여 지정한 class값을 삭제한다.
+		$("요소 선택").toggleClass("class값"); 요소를 선택하여 지정한 class 값이 있으면 삭제하고 없으면 생성한다.
+		$("요소 선택").hasClass("class값"); 선택한 요소에 지정한 class 값이 있으면 true, 없으면 false 반환한다.
+		*/
+
+        $(function() {
+			$("#p1").addClass("aqua");
+			$("#p2").removeClass("red");
+			$("#p3").toggleClass("green");
+			$("#p4").toggleClass("green");
+			$("#p6").text($("#p5")).hasClass("yellow");
+			
+        });
+    </script>
+
+<style>
+	.aqua{background-color:#0ff;}
+	.red{background-color:#f00;}
+	.green{background-color:#0f0;}
+	.yellow{background-color:#ff0;}
+</style>
+
+<p id="p1">내용1</p>
+<p id="p2" class="red">내용2</p>
+<p id="p3">내용3</p>
+<p id="p4" class="green">내용4</p>
+<p id="p5" class="yellow">내용5</p>
+<p id="p6"></p>
+</body>
+</html>
