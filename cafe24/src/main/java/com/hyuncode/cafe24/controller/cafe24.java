@@ -1,69 +1,86 @@
 package com.hyuncode.cafe24.controller;
 
-import java.util.Base64;
-import java.util.Base64.Encoder;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import okhttp3.OkHttpClient;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 @RestController 
 public class cafe24 {
-  private final String cliendId = "클라이언트아이디";
-  private final String clientSecretKey = "클라이언트시크릿키";
 
-  private OkHttpClient okHttpClient = new OkHttpClient.Builder()
-      .readTimeout(90, TimeUnit.SECONDS)
-      .build();
-
-  Gson gson = new GsonBuilder()
-      .setLenient()
-      .create();
-
-  private Retrofit cafe24Rest = new Retrofit.Builder()
-      .baseUrl("https://아이디.cafe24api.com/api/v2/")
-      .client(okHttpClient)
-      .addConverterFactory(GsonConverterFactory.create(gson))
-      .build();
-  OauthCode conn2 = cafe24Rest.create(OauthCode.class);
-  //ConnectToCafe24 conn = cafe24Rest.create(ConnectToCafe24.class);
-
-
-
+  @SuppressWarnings("unchecked")
   @RequestMapping(value="/getAuthorizeCode")
-  public String getAuthorizeCode(Code code) {
-    Encoder encoder = Base64.getEncoder();
-    String response_type = "code";
-    String Authorization = "Basic " + new String(encoder.encode((cliendId+":"+clientSecretKey).getBytes()));
-    String grant_type = "authorization_code";
-    String client_id = "클라이언트아이디";
-    String scope = "mall.read_category,mall.read_product,mall.read_collection,mall.read_supply,mall.read_personal,mall.read_order,mall.read_community,mall.read_customer,mall.read_notification,mall.read_store,mall.read_promotion,mall.read_design,mall.read_salesreport,mall.read_shipping";
-    String redirect_uri = "https://mdaida.cafe24.com/";
+  public String getAuthorizeCode() {
 
     try {
-      //Response<Map<String,Object>> result = conn.getAccessCode(Authorization,grant_type,code.getCode(),redirect_uri).execute();
-      System.out.println(conn2.getOauthCode(response_type,client_id,redirect_uri,scope).toString());
 
-      Response<Map<String,Object>> result = conn2.getOauthCode(response_type,client_id,redirect_uri,scope).execute();
-      System.out.println(result);
+      String url = "url";
 
-      if(result.errorBody()!=null) {
-        System.out.println("error : "+result.errorBody().string());
-        return "{\"isSucess\":\"false\"}";
+      URL obj = new URL(url);
+      HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+      conn.setReadTimeout(5000);
+      conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
+      conn.addRequestProperty("User-Agent", "Mozilla");
+      conn.addRequestProperty("Referer", "google.com");
+
+      System.out.println("Request URL ... " + url);
+
+      boolean redirect = false;
+
+      // normally, 3xx is redirect
+      int status = conn.getResponseCode();
+      if (status != HttpURLConnection.HTTP_OK) {
+        if (status == HttpURLConnection.HTTP_MOVED_TEMP
+            || status == HttpURLConnection.HTTP_MOVED_PERM
+            || status == HttpURLConnection.HTTP_SEE_OTHER)
+          redirect = true;
       }
-      //System.out.println("result : " + result.body());
+
+      System.out.println("Response Code ... " + status);
+
+      if (redirect) {
+
+        // get redirect url from "location" header field
+        String newUrl = conn.getHeaderField("Location");
+
+        // get the cookie if need, for login
+        String cookies = conn.getHeaderField("Set-Cookie");
+
+        // open the new connnection again
+        conn = (HttpURLConnection) new URL(newUrl).openConnection();
+        conn.setRequestProperty("Cookie", cookies);
+        conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
+        conn.addRequestProperty("User-Agent", "Mozilla");
+        conn.addRequestProperty("Referer", "google.com");
+
+        System.out.println("Redirect to URL : " + newUrl);
+
+      }
+
+      BufferedReader in = new BufferedReader(
+          new InputStreamReader(conn.getInputStream()));
+      String inputLine;
+      StringBuffer html = new StringBuffer();
+
+      while ((inputLine = in.readLine()) != null) {
+        html.append(inputLine);
+        html.append("\r\n");
+      }
+      in.close();
+
+      System.out.println("URL Content... \r\n" + html.toString());
+
+      return (html.toString());
+
 
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return "{\"isSucess\":\"true\"}";
-  };
+    return null;
 
-} 
+  }
+
+}
 

@@ -9,18 +9,44 @@
 </head>
 <body>
     <button id="getAuthorizeCode">코드받기</button>
-
+    <a target="parent" href="https://mdaida.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=nC4rTeGmE6XAf6k3wk4ftB&state=asdf&redirect_uri=https://mdaida.cafe24.com/&scope=mall.read_category,mall.read_product,mall.read_collection,mall.read_supply,mall.read_personal,mall.read_order,mall.read_community,mall.read_customer,mall.read_notification,mall.read_store,mall.read_promotion,mall.read_design,mall.read_salesreport,mall.read_shipping" class="button">Go to Google</a>
+    <div id="test"></div>
+    <input type="button" value="팝업창 호출" onclick="showPopup();">
+    
     <script>
+    const receiveMessage = async (e) =>
+    {
+      if(e.data.hasOwnProperty('code')){
+        console.log(e)
+      }
+    }
+    
+
+    window.addEventListener("message", receiveMessage, false);
+    
+            
+    
         $("#getAuthorizeCode").click(function() {
+            
             $.ajax({
-                url: '/getAuthorizeCode',
-                type: 'POST',
-                data : {"code" : '9zwbBhVRJtFjvFEWFlftkB'},
-                success: function(param) {
-                   console.log(param)
-                }// success END
-            }) //캘린더 리스트 불러오는ajax END
+                 url: '/getAuthorizeCode',
+                 type: 'GET',
+                 //data : {"code" : '9zwbBhVRJtFjvFEWFlftkB'},
+                 success: function(param) {
+                    console.log(param)
+                    $("#test").html(param)
+                 }// success END
+             }) //캘린더 리스트 불러오는ajax END
         })
+
+        
+        function showPopup(){
+            let location2 = window.open(url,"팝업 테스트","width=400, height=300, top=10, left=10");
+            window.opener.postMessage({code:locationQuery.code}, '*')
+            
+        }
+        
+
         
     </script>
 </body>
