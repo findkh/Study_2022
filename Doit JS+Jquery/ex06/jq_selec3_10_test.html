@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+		/*
+		$("요소 선택").append("새 요소"); 선택한 요소의 마지막 위치에 새 요소를 추가한다.
+		$("요소 선택").appendTo("요소 선택"); 선택한 요소의 마지막 위치에 새 요소를 추가한다.
+		$("요소 선택").prepend("새 요소");  선택한 요소의 맨 앞 위치에 새 요소를 추가한다.
+		$("요소 선택").prependTo("요소 선택"); 선택한 요소의 맨 앞 위치에 새 요소를 추가한다.
+		*/
+        $(function() {
+			$("<li>appendTo</li>").appendTo("#listZone");
+			$("#listZone").prepend("<li>prepend</li>");
+        });
+    </script>
+	<ul id="listZone">
+		<li>리스트</li>
+	</ul>
+</body>
+</html>

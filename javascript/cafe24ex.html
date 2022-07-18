@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+    <input type="button" value="팝업창 호출" onclick="showPopup();">
+    
+    <script>
+        url = "https://카페24아이디.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=클라이언트아이디&state=asdf&redirect_uri=https://mdaida.cafe24.com/&scope=mall.read_category,mall.read_product,mall.read_collection,mall.read_supply,mall.read_personal,mall.read_order,mall.read_community,mall.read_customer,mall.read_notification,mall.read_store,mall.read_promotion,mall.read_design,mall.read_salesreport,mall.read_shipping";
+        
+        function showPopup(){
+            let location2 = window.open(url,"팝업 테스트","width=400, height=300, top=10, left=10");
+            window.opener.postMessage({code:locationQuery.code}, '*')
+            
+        }
+    </script>
+</body>
+</html>
