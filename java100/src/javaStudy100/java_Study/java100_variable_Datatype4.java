@@ -1,3 +1,4 @@
+package java_Study;
 public class java100_variable_Datatype4 {
   public static void main(String args[]) {
     //기본형 타입 변수 선언과 동시에 값 입력

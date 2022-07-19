@@ -1,3 +1,4 @@
+package java_Study;
 public class java100_if_Basic003 {
   public static void main(String[] args) {
     // 변수 선언

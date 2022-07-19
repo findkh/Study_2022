@@ -1,3 +1,4 @@
+package java_Study;
 public class valiable_001 {
   public static void main(String[] args) {
     System.out.println(3+7);

@@ -1,5 +1,4 @@
 package java_Study;
-
 public class java100_switch_Basic001 {
   public static void main(String args[]) {
     int age = 30;

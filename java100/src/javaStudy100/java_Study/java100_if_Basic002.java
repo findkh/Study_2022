@@ -1,3 +1,4 @@
+package java_Study;
 public class java100_if_Basic002 {
   public static void main(String[] args) {
     int kor=80, eng=90, math=100;
