@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>애니메이션 효과</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  /*
+  버튼을 누를때마다 애니메이션 메서드를 이용하여 p태그가 50px 단위로 오른쪽으로 이동
+  이동속도는 0.5초
+  */
+$(function() {
+    $("#btn").on("click",function(){
+      $("#ctx").animate({marginLeft:"+=50px"}, 500)
+    });
+});
+</script>
+<style type="text/css">
+    * {
+      margin:0; 
+      padding:0;
+    }
+    #ctx {
+        width:50px; 
+        height:50px; 
+        background:yellow;
+        text-align: center;
+        vertical-align: center;
+    }
+</style>
+</head>
+<body>
+    <button id="btn">버튼</button>
+    <p id="ctx">내용</p>
+</body>
+</html>

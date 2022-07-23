@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>애니메이션 효과</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    /*
+    버튼을 눌렀을 때 효과 메서드를 이용하여 h1이 사라지도록 만들기
+    사라지는 속도는 1초
+    */
+$(function() {
+    $("#btn").on("click",function() {
+        $("h1").fadeOut(1000);
+    });
+});
+</script>
+</head>
+<body>
+    <button id="btn">버튼</button>
+    <h1>내용</h1>
+</body>
+</html>
