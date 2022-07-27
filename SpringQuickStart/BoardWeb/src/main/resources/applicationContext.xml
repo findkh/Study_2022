@@ -13,6 +13,14 @@
 	
 	<!-- <bean id="tv" class="polymorphism.SamsungTV" scope="singleton"/> -->
 	
-	<bean id="tv" class="polymorphism.SamsungTV" scope="prototype"/>
+	<!-- <bean id="tv" class="polymorphism.SamsungTV" scope="prototype"/> -->
+	<!-- <bean id="tv" class="polymorphism.SamsungTV" /> -->
 	
+	<bean id="tv" class="polymorphism.SamsungTV">
+		<constructor-arg ref="apple"></constructor-arg>
+		<constructor-arg value="2700000"></constructor-arg>
+	</bean>
+	
+	<bean id="sony" class="polymorphism.SonySpeaker"></bean>
+	<bean id="apple" class="polymorphism.AppleSpeaker"></bean>
 </beans>
