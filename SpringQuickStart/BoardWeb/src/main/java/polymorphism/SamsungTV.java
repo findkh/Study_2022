@@ -95,23 +95,53 @@ package polymorphism;
 //	}
 //}
 
-public class SamsungTV implements TV { 
-	
+//public class SamsungTV implements TV {	
+//	private Speaker speaker;
+//	private int price;
+//	
+//	public SamsungTV() {
+//		System.out.println("===SamsungTV(1) 按眉 积己===");
+//	}
+//	public SamsungTV(Speaker speaker) {
+//		System.out.println("=== SamsungTV(2) 按眉 积己===");
+//		this.speaker = speaker;
+//	}
+//	public SamsungTV(Speaker speaker, int price) {
+//		System.out.println("=== SamsungTV(3) 按眉 积己===");
+//		this.speaker = speaker;
+//		this.price = price;
+//	}
+//	public void powerOn() {
+//		System.out.println("SamsungTV---傈盔阑 囊促. (啊拜 : "+ price + ")");
+//	}
+//	public void powerOff() {
+//		System.out.println("SamsungTV---傈盔阑 馋促.");
+//	}
+//	public void volumeUp() {
+//		speaker.volumnUp();
+//	}
+//	public void volumeDown() {
+//		speaker.volumeDown();
+//	}
+//}
+
+//setter 牢璃记
+public class SamsungTV implements TV {	
 	private Speaker speaker;
 	private int price;
 	
 	public SamsungTV() {
 		System.out.println("===SamsungTV(1) 按眉 积己===");
 	}
-	public SamsungTV(Speaker speaker) {
-		System.out.println("=== SamsungTV(2) 按眉 积己===");
+	public void setSpeaker(Speaker speaker) {
+		System.out.println("===> setSpeaker() 龋免");
 		this.speaker = speaker;
 	}
-	public SamsungTV(Speaker speaker, int price) {
-		System.out.println("=== SamsungTV(3) 按眉 积己===");
-		this.speaker = speaker;
+	public void setPrice(int price) {
+		System.out.println("===> setPrice");
 		this.price = price;
 	}
+	
 	public void powerOn() {
 		System.out.println("SamsungTV---傈盔阑 囊促. (啊拜 : "+ price + ")");
 	}
