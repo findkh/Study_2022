@@ -1,5 +1,6 @@
 package polymorphism;
 
+//@Component("apple")
 public class AppleSpeaker implements Speaker {
 	
 	public AppleSpeaker() {
