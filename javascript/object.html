@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+let annotation = {
+    annotations: {
+        arrowannotation1 : {
+            type: 'line',
+            borderColor: 'green',
+            borderWidth: 1,
+            label: {
+            enabled: true,
+            backgroundColor: 'white',
+            borderRadius: 0,
+            color: 'red',
+            content: event.title
+            },
+            arrowHeads: {
+            start: {
+                enabled: true,
+                borderColor: 'green',
+            },
+            end: {
+                enabled: true,
+                borderColor: 'green',
+            }   
+            },
+            xMax: event.start,
+            xMin: event.end,
+            yMax: 110000000,
+            yMin: 110000000,
+        },
+        annotation2 : {
+            type: 'line',
+            borderColor: 'green',
+            borderDash: [6, 6],
+            borderWidth: 1,
+            xMax: event.start,
+            xMin: event.start,
+            yMax: 0,
+            yMin: 110000000,
+        },
+        annotation3 : {
+            type: 'line',
+            borderColor: 'green',
+            borderDash: [6, 6],
+            borderWidth: 1,
+            xMax: event.end,
+            xMin: event.end,
+            yMax: 0,
+            yMin: 110000000
+        }
+    }
+}
+</script>
+</body>
+</html>

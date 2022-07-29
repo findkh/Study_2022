@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+const layer0 = {
+    layer1Item1: "Layer 1 Item 1 Text",
+    layer1Item2: {
+    layer2Item1: "Layer 2 Item 2 Text",
+    layer2Item2: false,    
+    layer2Item3: {
+        layer3Item1: "Layer 3 Item 2 Text"
+    }
+    }
+};
+
+layer0.layer3Item = {
+    type: 'line',
+    borderColor: 'green',
+    borderDash: [6, 6],
+    borderWidth: 1,
+}
+
+// console.log(layer0)
+
+let annotation = {annotations: {}}
+// console.log(annotation);
+
+//object 이름 배열
+// objNameArr = [];
+// for (let i = 0; i < 3; i++) {
+//     objNameArr.push("annotationName" + i)
+// }
+// console.log(objNameArr)
+
+for (let i = 0; i < 3; i++) {
+    let nameKey = ("annotationName" + i);
+    //annotation.annotations.name1 = {
+    nameKey = {
+        idx : i,
+        name : 'test' + i,
+        type: 'line',
+        borderColor: 'green',
+        borderDash: [6, 6],
+        borderWidth: 1,
+        xMax: "2022-11",
+        xMin: "2022-11",
+        yMax: 0,
+        yMin: 110000000
+    }
+    //annotation.annotations.name2 = {
+    nameKey = {
+        idx : i,
+        name : 'test' + i,
+        type: 'line',
+        borderColor: 'yellow',
+        borderDash: [6, 6],
+        borderWidth: 1,
+        xMax: "2022-11",
+        xMin: "2022-11",
+        yMax: 0,
+        yMin: 110000000
+    }
+    annotation.annotations = nameKey
+}
+
+
+annotation.annotations['newAnnotation'].push(
+		{
+			drawTime: "afterDatasetsDraw",
+			
+			type: "line",
+			mode: "vertical",
+			scaleID: "x-axis-0",
+			
+			borderColor: "black",
+			borderWidth: 1,
+			label:
+			{
+				fontColor: "black",
+				backgroundColor: "white",
+				
+				enabled: true
+			}
+		});
+        console.log(annotation)
+
+</script>
+</body>
+</html>

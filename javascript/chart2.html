@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chart.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/2.0.0/chartjs-plugin-annotation.js"></script>
+<style>
+    .myChartDiv {
+    max-width: 600px;
+    max-height: 400px;
+  }
+  </style>
+
+</head>
+<body>
+<canvas id="myChart" width="600" height="400"/>
+
+
+<script>
+const lines = new Array();
+lines.push({
+            type: 'line',
+            label: {
+              enabled: true,
+              backgroundColor: '#555555',
+              borderRadius: 0,
+              color: 'white',
+              content: 10
+            },
+            xMin: 0.5,
+            xMax: 1.5,
+            yMin: 10,
+            yMax: 10,
+            backgroundColor: 'red',
+            borderColor: 'red',
+            borderWidth: 2
+          });
+const chart = new Chart("myChart", {
+  type: 'bar',
+  data: {
+    datasets: [{
+      data: [10, 20, 30, 0, 55],
+      backgroundColor: '#136292',
+      borderColor: '#235988',
+      borderWidth: 1
+    }],
+    labels: ['A', 'B', 'C', 'D', 'E']
+  },
+  options: {
+    plugins: {
+      annotation: {
+        annotations: lines
+      }
+    }
+  }
+});
+
+chart.data.datasets.push({
+  type: 'bar',
+  label: "New DS",
+  data: [15, 25, 35, 10, 35],
+  backgroundColor: '#132292',
+  borderColor: '#232988',
+  borderWidth: 1,
+  radius: 5,
+  pointStyle : 'star'
+});
+
+chart.update();
+
+lines.push({
+  type: 'line',
+  label: {
+    enabled: true,
+    backgroundColor: '#555555',
+    borderRadius: 0,
+    color: 'white',
+    content: 20
+  },
+  xMin: 1.5,
+  xMax: 2.5,
+  yMin: 20,
+  yMax: 20,
+  backgroundColor: 'red',
+  borderColor: 'red',
+  borderWidth: 1
+});
+
+chart.update();
+</script>
+</body>
+</html>
