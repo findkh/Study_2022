@@ -171,3 +171,70 @@ select 사원번호 from 직급 where 직급명 = 'Manager';
 -- 5-10. all : 테이블 풀 스캔 방식, 활용할 수 있는 인덱스가 없거나, 인덱스를 활용하는게 비효율적일 때 선택됨
 explain
 select * from 사원;
+
+-- 6. possible_keys: 옵티마이저가 SQL문을 최적화하고자 사용할 수 있는 인덱스 목록을 출력
+-- 7. key : 옵티마이저가 SQL문을 최적화하고자 사용한 기본 키 또는 인덱스명을 의미
+explain
+select 사원번호
+from 직급
+where 직급명 = "Manager";
+
+explain
+select * from 사원;
+
+-- 8. key_len : 사용한 인덱스의 바이트 수
+explain 
+select 사원번호
+from 직급
+where 직급명 = "Manager";
+
+-- 9. ref : 테이블 조인을 수행할 때 어떤 조건으로 해당 테이블에 액세스되었는지를 알려주는 정보
+explain
+select 사원.사원번호, 직급.직급명 
+from 사원, 직급
+where 사원.사원번호 = 직급.사원번호 and 사원.사원번호 between 10001 and 10100;
+
+-- 10. rows : sql문을 수행하고자 접근하는 데이터의 모든 행수를 나타내는 예측 항목
+
+-- 11. filtered : sql문을 통해 db엔진으로 가져온 데이터 대상으로 필터 조건에 따라 어느 정도의 비율로 데이터를 제거했는지를 의미하는 항목
+
+-- 12. extra : sql 문을 어떻게 수행할 것인지에 관한 추가 정보를 보여주는 항목
+-- 12-1. distinct : 중복이 제거 되어 유일한 값을 찾을 때 출력되는 정보
+-- 12-2. using where : where절의 필터 조건을 사용해 mysql엔진으로 가져온 데이터를 추출할 것이라는 의미
+-- 12-3. using temporary : 데이터의 중간 결과를 저장하고자 임시 테이블을 생성하겠다는 의미, distinct, group by, order by 구문이 포함된 경우 출력 -> 성능 저하 원인 튜닝 대상
+-- 12-4. using index : 인덱스만 읽어서 sql문의 요청 사항을 처리할 수 있는 경우
+explain
+select 직급명
+from 직급
+where 사원번호 = 100000;
+-- 12-5. using filesort : 정렬이 필요한 데이터를 메모리에 올리고 정렬 작업을 수행한다는 의미
+-- 12-6. using join buffer : 조인을 수행하기 위해 중간 데이터 결과를 저장하는 조인 버퍼 사용한다는 의미
+-- 12-7. using union/using inersect/ suing sort_union
+-- 		 using union은 인덱스들을 합집합처럼 모두 결합하여 데이터에 접근
+-- 		 using intersect은 인덱스를 교집합처럼 추출하는 방식 AND 구문으로 작성된 경우
+-- 		 using sort_union은 where절의 or구문이 동등조건이 아닐때 
+-- 12-8. using index condition : 필터 조건을 스토리지 엔진으로 전달하여 필터링 작업에 대한 mysql 엔진의 부하를 줄이는 방식
+-- 12-9. using index condition(BKA) : type 정보의 using index condition과 비슷, 데이터를 검색하기 위해 배치 키 액세스를 사용하는 방식
+-- 12-10. using index for group-by : group by 구문이나 distinct 구문이 포함될 때 인덱스로 정렬 작업을 수행하여 최적화
+-- 12-11. not exists : 하나의 일치하는 행을 찾으면 추가로 행을 더 검색하지 않아도 될 때 출력되는 유형
+
+-- ======================================================================================
+-- mysql의 확장된 실행 계획 수행
+explain format = traditional
+select * from 사원 where 사원번호 between 100001 and 200000;
+
+explain format = tree
+select * from 사원 where 사원번호 between 100001 and 200000;
+
+explain format = json
+select * from 사원 where 사원번호 between 100001 and 200000;
+
+explain analyze
+select * from 사원 where 사원번호 between 100001 and 200000;
+
+-- sql 프로파일링 실행
+show variables like 'profiling%';
+set profiling = 'on';
+
+select 사원번호 from 사원 where 사원번호 = 100000;
+show profiles;
