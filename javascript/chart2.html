@@ -71,7 +71,8 @@ chart.data.datasets.push({
 
 chart.update();
 
-lines.push({
+for(let i = 0; i < 3; i++) {
+  lines.push({
   type: 'line',
   label: {
     enabled: true,
@@ -80,15 +81,17 @@ lines.push({
     color: 'white',
     content: 20
   },
-  xMin: 1.5,
-  xMax: 2.5,
-  yMin: 20,
-  yMax: 20,
+  xMin: i+1,
+  xMax: i+1.5,
+  yMin: i+20,
+  yMax: i+20,
   backgroundColor: 'red',
   borderColor: 'red',
   borderWidth: 1
 });
+}
 
+console.log(lines)
 chart.update();
 </script>
 </body>
