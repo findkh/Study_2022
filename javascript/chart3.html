@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <h3 class="card-text"><canvas id="test"></canvas></h3>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
+    <script>
+var ann = ["4.35", "4.29"];
+var ann_labels = ["start", "stop"];
+var annotations_array = ann.map(function(value, index) {
+  return {
+    type: 'line',
+    id: 'vline' + index,
+    mode: 'vertical',
+    scaleID: 'x-axis-0',
+    value: value,
+    borderColor: 'green',
+    borderWidth: 1,
+    label: {
+      enabled: true,
+      //position: "bottom",
+      xValue: '3.99',
+      yValue: '1.7 m',
+      content: ann_labels[index]
+    }
+  }
+});
+console.log(annotations_array)
+
+var ctx = document.getElementById('test').getContext('2d');
+var test = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ["1.44", "4.03", "4.35", "3.99", "3.58", "3.75", "4.29", "5.02", "5.95", "6.65"],
+    datasets: [{
+        data: ["1", "2", "1", "2", "1", "2", "1", "2", "1", "2"],
+        yAxisID: 'A',
+        backgroundColor: [
+          'rgba(91, 192, 222, 0.1)',
+        ],
+        borderColor: [
+          'rgba(0, 123, 255, 0.8)',
+        ],
+        borderWidth: 1.3,
+      },
+      {
+        data: ["10", "11", "12", "13", "14", "15", "16", "17", ],
+        yAxisID: 'B',
+        backgroundColor: [
+          'rgba(255, 206, 86, 0.0)',
+        ],
+        borderColor: [
+          'rgba(217, 83, 79, 0.6)',
+        ],
+        borderWidth: 1.3,
+      }
+    ]
+  },
+  options: {
+    annotation: {
+      drawTime: 'afterDatasetsDraw',
+      annotations: annotations_array
+    },
+    maintainAspectRatio: true,
+    scales: {
+      yAxes: [{
+          id: 'A',
+          ticks: {
+            callback: function(value, index, values) {
+              return value + ' m';
+            },
+            reverse: true,
+          }
+        },
+        {
+          id: 'B',
+          position: 'right',
+          ticks: {
+            callback: function(value, index, values) {
+              return value + ' °C';
+            },
+            reverse: true,
+          }
+        }
+      ]
+    },
+    elements: {
+      point: {
+        radius: 0,
+      }
+    },
+    legend: {
+      position: 'bottom',
+      display: false,
+    },
+  }
+});
+console.log(annotations_array)
+    </script>
+</body>
+</html>
