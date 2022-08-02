@@ -11,8 +11,79 @@
     <h3 class="card-text"><canvas id="test"></canvas></h3>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
+<div class="myChartDiv">
+    <canvas id="myChart" width="600" height="400">               </canvas>
+  </div>
+  <style>
+    .myChartDiv {
+  max-width: 600px;
+  max-height: 400px;
+}
+  </style>
     <script>
-      
+        //https://github.com/chartjs/chartjs-plugin-annotation/issues/462
+      var ctx = document.getElementById("myChart");
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["Jan", "Feb", "Mar", "Apr", "May "], 
+		  datasets: [{
+        label: 'dataset',
+        borderWidth: 1,
+        pointStyle: 'circle',
+		  	data: [120, 23, 24, 45, 51]
+		  }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+				annotation: {
+					annotations: {
+						myVLine1: {
+							type: 'line',
+							scaleID: 'x',
+							value: 26,
+							borderColor: 'black',
+							borderWidth: 2,
+							label: {
+								position: 'start',
+								yAdjust: 30,
+								backgroundColor: 'black',
+								content: 'This is a long test label',
+								enabled: true
+							},
+						},
+						myVerticalLine: {
+							type: 'line',
+							scaleID: 'x',
+							value: 25,
+							borderColor: 'red',
+							borderWidth: 2,
+							label: {
+								position: 'start',
+								backgroundColor: 'red',
+								content: 'This is another test label',
+								enabled: true
+							},
+						}
+					},
+        },
+      },
+      scales: {
+        x: {
+         display: true,
+         type: 'linear',
+         gridLines: {
+           display: true 
+         }
+        },
+        y: {
+         display: true,
+         max: 100,
+        }
+      }
+   }
+});
     </script>
 </body>
 </html>
