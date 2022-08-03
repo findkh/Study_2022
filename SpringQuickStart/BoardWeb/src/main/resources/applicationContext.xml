@@ -96,12 +96,34 @@
 	
 	<!-- aop 적용 -->
 	<!-- <bean id="log" class="com.springbook.biz.common.LogAdvice"></bean> -->
-	<bean id="log" class="com.springbook.biz.common.Log4jAdvice"></bean>
+	<!-- <bean id="log" class="com.springbook.biz.common.Log4jAdvice"></bean> -->
+	<!-- <bean id="before" class="com.springbook.biz.common.BeforeAdvice"></bean> -->
+	<!-- <bean id="afterReturning" class="com.springbook.biz.common.AfterReturningAdvice"></bean> -->
+	<!-- <bean id="afterThrowing" class="com.springbook.biz.common.AfterThrowingAdvice"></bean>
+	<bean id="after" class="com.springbook.biz.common.AfterAdvice"></bean> -->
+	<bean id="around" class="com.springbook.biz.common.AroundAdvice"></bean>
 	
 	<aop:config>
 		<aop:pointcut expression="execution(* com.springbook.biz..*Impl.*(..))" id="allPointcut"/>
-		<aop:aspect ref="log">
-			<aop:before method="printLogging" pointcut-ref="allPointcut"/>
+		
+		<aop:aspect ref="around">
+			<aop:around method="aroundLog" pointcut-ref="allPointcut"/>
 		</aop:aspect>
+		
+		<!-- <aop:pointcut expression="execution(* com.springbook.biz..*Impl.get*(..))" id="getPointcut"/> -->
+		<!-- <aop:aspect ref="log"> -->
+		<!-- <aop:aspect ref="before"> -->
+		<!-- <aop:aspect ref="afterReturning">	 -->
+		<!-- <aop:aspect ref="afterThrowing"> -->		
+			<!-- <aop:after method="printLogging" pointcut-ref="getPointcut"/> -->
+			<!-- <aop:before method="printLogging" pointcut-ref="allPointcut"/> -->
+			<!-- <aop:before method="printLogging" pointcut-ref="getPointcut"/> -->
+			<!-- <aop:before method="beforeLog" pointcut-ref="allPointcut"/> -->
+			<!-- <aop:after method="afterLog" pointcut-ref="allPointcut"/> -->
+			<!-- <aop:after-throwing method="exceptionLog" pointcut-ref="allPointcut"/> -->
+		<!-- </aop:aspect> -->
+		<!-- <aop:aspect ref="after">
+			<aop:after method="finallyLog" pointcut-ref="allPointcut"/>
+		</aop:aspect> -->
 	</aop:config>
 </beans>
