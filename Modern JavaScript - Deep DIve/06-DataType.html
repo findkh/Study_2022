@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터 타입</title>
+</head>
+<body>
+<script>
+/*
+데이터 타입
+원시 타입 : 숫자, 문자열, 불리언, undefined, null, symbol
+객체 타입 : 객체, 함수, 배열 등
+
+1. 숫자타입
+ECMAScript 사양에 따르면 숫자 타입의 값은 배정밀도 64비트 부동소수점 형식을 따른다.
+모든 수를 실수로 처리하며, 정수만 표현하기 위한 데이터 타입이 별도로 존재하지 않는다.
+*/
+
+//숫자타입
+let integer = 10;
+let double = 10.12;
+let negative = -20;
+let num = 65;
+let binary = 0b01000001; //2진수
+let octal = 0o101; //8진수
+let hex = 0x41; //16진수
+
+console.log(binary);
+console.log(octal);
+console.log(hex);
+console.log(num === binary);
+console.log(num === octal);
+console.log(num === hex);
+console.log(binary === octal);
+console.log(octal === hex);
+
+console.log(1 === 1.0) //true
+
+</script>
+</body>
+</html>
