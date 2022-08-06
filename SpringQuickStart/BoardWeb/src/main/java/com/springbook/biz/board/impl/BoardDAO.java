@@ -1,4 +1,4 @@
-package com.springbook.biz.BoardServiceImpl;
+package com.springbook.biz.board.impl;
 //DAO(Data Access Object) 데이터베이스 연동을 담당하는 클래스
 
 import java.sql.Connection;
