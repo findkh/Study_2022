@@ -87,19 +87,19 @@ public class BoardDAO {
 			stmt = conn.prepareStatement(BOARD_GET);
 			stmt.setInt(1, vo.getSeq());
 			rs = stmt.executeQuery();
-			if(rs.next()) {
+			if (rs.next()) {
 				board = new BoardVO();
 				board.setSeq(rs.getInt("SEQ"));
 				board.setTitle(rs.getString("TITLE"));
-				board.setContent(rs.getString("CONTENT"));
 				board.setWriter(rs.getString("WRITER"));
-				board.setRegDate(rs.getDate("DATE"));
+				board.setContent(rs.getString("CONTENT"));
+				board.setRegDate(rs.getDate("REGDATE"));
 				board.setCnt(rs.getInt("CNT"));
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			JDBCUtil.close(stmt, conn);
+		} finally {
+			JDBCUtil.close(rs, stmt, conn);
 		}
 		return board;
 	}
@@ -112,21 +112,21 @@ public class BoardDAO {
 			conn = JDBCUtil.getConnection();
 			stmt = conn.prepareStatement(BOARD_LIST);
 			rs = stmt.executeQuery();
-			if(rs.next()) {
+			while (rs.next()) {
 				BoardVO board = new BoardVO();
 				board.setSeq(rs.getInt("SEQ"));
 				board.setTitle(rs.getString("TITLE"));
-				board.setContent(rs.getString("CONTENT"));
 				board.setWriter(rs.getString("WRITER"));
+				board.setContent(rs.getString("CONTENT"));
 				board.setRegDate(rs.getDate("REGDATE"));
 				board.setCnt(rs.getInt("CNT"));
 				boardList.add(board);
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			JDBCUtil.close(stmt, conn);
+		} finally {
+			JDBCUtil.close(rs, stmt, conn);
 		}
 		return boardList;
-	}	
+	}
 }
