@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="jqcloud.min.js"></script>
+    <link rel="stylesheet" href="jqcloud.min.css" />
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/networkgraph.js"></script>
+<script>
+$(document).ready(function() {
+   let keyword = [
+      {text: "그램", weight: 14},
+      {text: "앰플", weight: 15},
+      {text: "오늘", weight: 9.4},
+      {text: "피부", weight: 8},
+      {text: "라이브", weight: 6.2},
+      {text: "우리", weight: 5},
+      {text: "행사", weight: 3},
+      {text: "주말", weight: 1},
+   ];
+   
+   //키워드 워드클라우드
+   if ($('#jqcloud1 span').length == 0) {
+      $("#jqcloud1").jQCloud(keyword, {
+         height: 300,
+         shape: 'rectangular',
+         autoResize: true,
+         classPattern: null,
+         colors: ["#003F5D", "#00527C", "#00609C", "#006DB2", "#4E97D1", "#7BB4E3", "#A3CEEF", "#88CDF6", "#BCE6FF"],
+         fontSize: {
+            from: 0.1,
+            to: 0.02
+         },
+         afterCloudRender : function(){
+            //console.log($('#jqcloud1 span.jqcloud-word')) span 목록
+            $('#jqcloud1 span.jqcloud-word').each(function(idx) {
+               $(this).on('click',function() { //span 클릭 이벤트
+                  let ketywordID = $(this).prop("id");
+                  let keyword = $(this).text();
+                  let obj = {
+                        id       : keyword,
+                        keyword : keyword
+                  }
+                  //차트 데이터 불러오는 ajax 요청 넣기!!!!!!!!!!!!!!!!!!!!!
+                  //keywordData -> 데이터
+                  fn_drawKeywordChart(keywordData, nodeData, obj)
+               })
+            })
+         }
+      });
+   } else {
+      $('#jqcloud1').jQCloud('update', keyword);
+   }
+   
+   let hashtag = [
+      {text: "그린컷", weight: 13},
+      {text: "진정팩", weight: 10.5},
+      {text: "댓글이벤트", weight: 9.4},
+      {text: "글루타치온", weight: 8},
+      {text: "썬크림", weight: 6.2},
+      {text: "이벤트", weight: 5},
+      {text: "효소", weight: 5},
+   ];
+   
+   //해시태그 워드클라우드
+   if ($('#jqcloud2 span').length == 0) {
+      $("#jqcloud2").jQCloud(hashtag, {
+         height: 300,
+         shape: 'rectangular',
+         autoResize: true,
+         classPattern: null,
+         colors: ["#1B5E20", "#2E7D32", "#388E3C", "#43A047", "#4CAF50", "#81C784", "#A5D6A7", "#C8E6C9", "#E8F5E9"],
+         fontSize: {
+            from: 0.1,
+            to: 0.02
+         },
+         afterCloudRender : function(){
+         //console.log($('#jqcloud1 span.jqcloud-word')) span 목록
+            $('#jqcloud2 span.jqcloud-word').each(function(idx) {
+               $(this).on('click',function() { //span 클릭 이벤트
+                  let hashtagID = $(this).prop("id");
+                  let hashtag = $(this).text();
+                  let obj = {
+                        id       : hashtag,
+                        hashtag : hashtag
+                  }
+                  //차트 데이터 불러오는 ajax 요청 넣기!!!!!!!!!!!!!!!!!!!!!
+                  //keywordData -> 데이터
+                  fn_drawHashtagChart(hashtagData, nodeData2, obj)
+               })
+            })
+            
+         }
+      });
+   } else {
+      $('#jqcloud2').jQCloud('update', hashtag);
+   }
+   
+   let keywordData = [//from ---> to
+      ['앰플', '앰플 test1'],
+      ['앰플', '앰플 test2'],
+      ['앰플', '앰플 test3'],
+      ['앰플', '앰플 test4'],
+      ['앰플', '앰플 test5'],
+      ['그램', '그램 test1'],
+      ['그램', '그램 test2'],
+      ['그램', '그램 test3'],
+      ['그램', '그램 test4'],
+      ['그램', '그램 test5'],
+      ['오늘', '오늘 test1'],
+      ['오늘', '오늘 test2'],
+      ['오늘', '오늘 test3'],
+      ['오늘', '오늘 test4'],
+      ['오늘', '오늘 test5'],
+      ['피부', '피부 test1'],
+      ['피부', '피부 test2'],
+      ['피부', '피부 test3'],
+      ['피부', '피부 test4'],
+      ['피부', '피부 test5'],
+      ['라이브', '라이브 test1'],
+      ['라이브', '라이브 test2'],
+      ['라이브', '라이브 test3'],
+      ['라이브', '라이브 test4'],
+      ['라이브', '라이브 test5'],
+      ['우리', '우리 test1'],
+      ['우리', '우리 test2'],
+      ['우리', '우리 test3'],
+      ['우리', '우리 test4'],
+      ['우리', '우리 test5'],
+      ['행사', '행사 test1'],
+      ['행사', '행사 test2'],
+      ['행사', '행사 test3'],
+      ['행사', '행사 test4'],
+      ['행사', '행사 test5'],
+      ['주말', '주말 test1'],
+      ['주말', '주말 test2'],
+      ['주말', '주말 test3'],
+      ['주말', '주말 test4'],
+      ['주말', '주말 test5']
+   ];
+   
+   //차트 색깔 옵션
+   let keywordColor = '#88CDF6'
+   let nodeData = [
+      {   id: '앰플',
+         marker: {radius: 20},
+         color: keywordColor
+      }, 
+      {   id: '그램',
+         marker: {radius: 20},
+         color: keywordColor
+      },
+      {   id: '오늘',
+         marker: {radius: 20},
+         color: keywordColor
+      },
+      {   id: '피부',
+         marker: {radius: 20},
+         color: keywordColor
+      },
+      {   id: '라이브',
+         marker: {radius: 20},
+         color: keywordColor
+      },
+      {   id: '우리',
+         marker: {radius: 20},
+         color: keywordColor
+      },
+      {   id: '행사',
+         marker: {radius: 20},
+         color: keywordColor
+      },
+      {   id: '주말',
+         marker: {radius: 20},
+         color: keywordColor
+      },
+   ];
+   
+   //키워드 네트워크 차트 그리는 fn
+   function fn_drawKeywordChart(keywordData, nodeData, data) {
+      //let colors = Highcharts.getOptions().colors; //제공하는 컬러 10개
+      //console.log(colors)
+      
+      let keywordArr = [];
+      //데이터 
+      for(let i = 0; i < keywordData.length; i++) {
+         //console.log(hashtagData[i][1])
+         if(keywordData[i][0] == data.keyword) {
+            keywordArr.push(keywordData[i])
+         }
+      }
+      
+      //노드 옵션
+      let keywordNode = [];
+      for (let i = 0; i < nodeData.length; i++) {
+         if (data.id == nodeData[i].id) {
+            keywordNode.push(nodeData[i])
+         }
+      }
+      
+      Highcharts.chart('chart_Container1', {
+         chart: {
+            type: 'networkgraph',
+            marginTop: 0,
+            marginLeft : 0
+         },
+         navigation: {
+            buttonOptions: {enabled: false} //메뉴버튼 숨김
+         },
+         credits: { enabled: false }, //하이차트 링크 숨김
+         title: { text: ''},
+         subtitle: { text: ''},
+         plotOptions: {
+            networkgraph: {
+               keys: ['from', 'to'],
+               layoutAlgorithm: {
+                  enableSimulation: true,
+                  integration: 'verlet',
+                  linkLength: 90
+               },
+               dataLabels :{
+                  style :{fontSize :15}
+               }
+            }
+         },
+         series: [{
+            cursor: 'pointer',
+            marker: {
+               radius: 10, //node 원크기
+            },
+            dataLabels: {
+               enabled: true,
+               linkFormat: '',
+               allowOverlap: true
+            },
+            data: keywordArr,
+            color : '#BCE6FF',
+            nodes: keywordNode
+            }]
+         });
+      
+   }//fn_drawKeywordChart END
+   
+   let hashtagData = [
+      ['그린컷', '그린컷 test1'],
+      ['그린컷', '그린컷 test2'],
+      ['그린컷', '그린컷 test3'],
+      ['그린컷', '그린컷 test4'],
+      ['그린컷', '그린컷 test5'],
+      ['댓글이벤트', '댓글이벤트 test1'],
+      ['댓글이벤트', '댓글이벤트 test2'],
+      ['댓글이벤트', '댓글이벤트 test3'],
+      ['댓글이벤트', '댓글이벤트 test4'],
+      ['댓글이벤트', '댓글이벤트 test5'],
+      ['진정팩', '진정팩 test 1'],
+      ['진정팩', '진정팩 test 2'],
+      ['진정팩', '진정팩 test 3'],
+      ['진정팩', '진정팩 test 4'],
+      ['진정팩', '진정팩 test 5'],
+      ['썬크림', '썬크림 test 1'],
+      ['썬크림', '썬크림 test 2'],
+      ['썬크림', '썬크림 test 3'],
+      ['썬크림', '썬크림 test 4'],
+      ['썬크림', '썬크림 test 5'],
+      ['이벤트', '이벤트 test 1'],
+      ['이벤트', '이벤트 test 2'],
+      ['이벤트', '이벤트 test 3'],
+      ['이벤트', '이벤트 test 4'],
+      ['이벤트', '이벤트 test 5'],
+      ['효소', '효소 test 1'],
+      ['효소', '효소 test 2'],
+      ['효소', '효소 test 3'],
+      ['효소', '효소 test 4'],
+      ['효소', '효소 test 5'],
+      ['글루타치온', '글루타치온 test 1'],
+      ['글루타치온', '글루타치온 test 2'],
+      ['글루타치온', '글루타치온 test 3'],
+      ['글루타치온', '글루타치온 test 4'],
+      ['글루타치온', '글루타치온 test 5'],
+   ];
+   
+   let hashtagColor = '#D6E9AA'
+   let nodeData2 = [
+      {   id: '그린컷',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+      {   id: '댓글이벤트',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+      {   id: '진정팩',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+      {   id: '글루타치온',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+      {   id: '썬크림',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+      {   id: '이벤트',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+      {   id: '효소',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+      {   id: '주말',
+         marker: {radius: 20},
+         color: hashtagColor
+      },
+   ];
+   
+   function fn_drawHashtagChart(hashtagData, nodeData2, data) {
+      let hashArr = [];
+      //데이터 
+      for(let i = 0; i < hashtagData.length; i++) {
+         if(hashtagData[i][0] == data.hashtag) {
+            hashArr.push(hashtagData[i])
+         }
+      }
+      
+      //노드 옵션
+      let hashNode = [];
+      for (let i = 0; i < nodeData2.length; i++) {
+         if (data.id == nodeData2[i].id) {
+            hashNode.push(nodeData2[i])
+         }
+      }
+      console.log(hashNode)
+      
+      Highcharts.chart('chart_Container2', {
+         chart: {
+            type: 'networkgraph',
+            marginTop: 0,
+            marginLeft : 0
+         },
+         navigation: {
+            buttonOptions: {enabled: false} //메뉴버튼 숨김
+         },
+         credits: { enabled: false }, //하이차트 링크 숨김
+         title: { text: ''},
+         subtitle: { text: ''},
+         plotOptions: {
+            networkgraph: {
+               keys: ['from', 'to'],
+               layoutAlgorithm: {
+                  enableSimulation: true,
+                  integration: 'verlet',
+                  linkLength: 90
+               },
+               dataLabels :{
+                  style :{fontSize :15}
+               }
+            }
+         },
+         series: [{
+            cursor: 'pointer',
+            marker: {
+               radius: 10, //node 원크기
+            },
+            dataLabels: {
+               enabled: true,
+               linkFormat: '',
+               allowOverlap: true
+            },
+            data: hashArr,
+            color : '#DAF1DE',
+            nodes: hashNode
+            }]
+         });
+   }; //fn_drawHashtagChart END
+   
+}); //$(document).ready END
+
+
+</script>
+
+<style>
+#jqcloud1, #jqcloud2 {
+   width:80%;
+}
+#chart_Container1, #chart_Container2 {
+   min-width: 350px;
+   max-width: 400px;
+   margin: 0 auto;
+   height: 250px;
+}
+#jqcloud1 span.jqcloud-word, #jqcloud2 span.jqcloud-word {
+   cursor: pointer;
+}
+</style>
+
+<div class="content-wrap">
+   <div class="main">
+      <div class="container-fluid">
+         <section id="main-content">
+            <div class="row">
+               <div class="col-lg-12">
+                  <div class="card">
+                     <div class="card-title">
+                        <h3 class="float-left">데이터 조회</h3>
+                     </div>
+                     <div class="card-body">
+                        <div class="row">
+                           <div class="col-sm-6">
+                              <h5><span class="search-label float-left">keyword(Latest 100 Posts)</span></h5>
+                              <div id="jqcloud1"></div>
+                              <h5><span class="search-label float-left">keyword Network</span></h5><br>
+                              <div id="chart_Container1"></div>
+                           </div>
+                           <div class="col-sm-6">
+                              <h5><span class="search-label float-left">Hashtag(Latest 100 Posts)</span></h5>
+                              <div id="jqcloud2"></div>
+                              <h5><span class="search-label float-left">Hashtag Network</span></h5><br>
+                              <div id="chart_Container2"></div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </div>
+   </div>
+</div>
+</body>
+</html>
