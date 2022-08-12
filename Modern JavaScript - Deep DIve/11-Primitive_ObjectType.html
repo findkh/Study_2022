@@ -90,8 +90,15 @@ let sudal2 = {
     name: 'sudal'
 }
 
-console.log(sudal1 === sudal2)
-console.log(sudal1.name === sudal2.name)
+console.log(sudal1 === sudal2) //false
+console.log(sudal1.name === sudal2.name) //true
+
+/* 
+=== 일치 비교 연산자는 변수에 저장되어 있는 값을 타입 변환하지 않고 비교한다.
+변수를 비교하면 참조값을 비교하고, 원시 값을 할당한 변수를 비교하면 원시 값을 비교한다.
+sudal1, sudal2 변수의 비교는 변수가 가리키는 객체가 다른 메모리에 저장되어 있기 때문에 참조 값이 다르다.
+sudal1.name과 sudal2.name은 값으로 평가될 수 있는 표현식, 원시 값이기 때문에 원시 값으로 비교하여 true이다.
+*/
 </script>
 </body>
 </html>
