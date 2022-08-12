@@ -2,7 +2,6 @@
 <%@page import="com.springbook.biz.board.impl.BoardDAO"%>
 <%@page import="com.springbook.biz.board.BoardVO"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 
 <%
 	//세션에 저장된 글 목록을 꺼낸다.
@@ -48,16 +47,16 @@
 		<td bgcolor="orange" width="100">조회수</td>
 	</tr>
 	
-	<c:forEach items="${boardList}" var="board">
+	<% for(BoardVO board : boardList) { %>
 	<tr>
-		<td>${board.seq}</td>
-		<td align="left"><a href="getBoard.do?seq=${board.seq}">
-						${board.title}</a></td>
-		<td>${board.writer}</td>
-		<td>${board.regDate}</td>
-		<td>${board.cnt}</td>
+		<td><%= board.getSeq() %></td>
+		<td align="left"><a href="getBoard.do?seq=<%= board.getSeq() %>">
+						<%= board.getTitle() %></a></td>
+		<td><%= board.getWriter() %></td>
+		<td><%= board.getRegDate() %></td>
+		<td><%= board.getCnt() %></td>
 	</tr>
-	</c:forEach>
+	<%} %>
 </table>
 <br>
 <a href="insertBoard.jsp">새글 등록</a>
