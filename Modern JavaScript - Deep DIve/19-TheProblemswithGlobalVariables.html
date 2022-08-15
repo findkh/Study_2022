@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전역 변수의 문제점</title>
+</head>
+<body>
+<script>
+/*
+1. 변수의 생명주기
+1-1. 지역 변수의 생명 주기
+    지역 변수의 생명 주기는 함수의 생명 주기와 일치한다.
+1-2. 전역 변수의 생명 주기
+    var 키워드로 선언한 전역 변수는 전역 객체의 프로퍼티가 된다. 
+    var 키워드로 선언한 전역 변수의 생명 주기는 전역 객체의 생명 주기와 일치 한다.
+2. 전역 변수의 문제점
+    - 암묵적 결합(implicit coupling)
+    전역 변수를 선언한 의도는 어디서든 참조하고 할당할 수 있는 변수를 사용하겠다는 것이다. 
+    유효범위가 크면 클수록 코드의 가독성은 나빠지고 의도치 않게 상태가 변경될 수 있는 위험성도 높아진다.
+    - 긴 생명 주기
+    전역 변수는 생명 주기가 길어 메모리 리소스도 오랜 기간 소비한다.
+    var 키워드는 중복 선언을 허용하므로 변수 이름이 중복될 가능성도 있어 의도치 않은 재할당이 이뤄질 수 있다.
+    - 스코프 체인 상에서 종점에 존재
+    변수를 검색할 때 전역 변수가 가장 마지막에 검색된다. 그러므로 검색 속도가 느리다.
+    - 네임스페이스 오염
+    자바스크립트는 파일이 분리되어 있어도 하나의 전역 스코프를 공유한다.
+3. 전역 변수의 사용을 억제하는 방법
+    전역 변수를 반드시 사용해야 할 이유를 찾지 못한다면 지역 변수를 사용해야 한다.
+    변수 스코프는 좁을 수록 좋다.
+3-1. 즉시 실행 함수
+    함수 정의와 동시에 호출되는 즉시 실행 함수는 단 한번만 호출된다.
+    모든 코드를 즉시 실행 함수로 감싸면 모든 변수는 즉시 실행 함수의 지역 변수가 된다.
+3-2. 네임스페이스 객체
+    전역에 네임 스페이스 역할을 담당할 객체를 생성하고 저녁 변수처럼 사용하고 싶은 변수를 프로퍼티로 추가한다.
+3-3. 모듈 패턴
+    클로저를 기반으로 동작하며,
+    클래스를 모방해서 관련이 있는 변수와 함수를 모아 즉시 실행함수로 감싸 하나의 모듈을 만든다.
+    전역변수의 억제하고, 캡슐화까지 구현할 수 있다.
+3-4. ES6 모듈
+    ES6 모듈을 사용하면 전역 변수를 사용할 수 없다.
+    파일 자체에 독자적인 모듈 스코프를 제공한다.
+*/
+
+//즉시 실행함수
+(function() {
+    var foo = 10;
+}());
+//console.log(foo); //Uncaught ReferenceError: foo is not defined
+
+//네임스페이스
+var MYAPP = {}; //전역 네임스페이스 객체
+MYAPP.name = 'sudal';
+console.log(MYAPP.name);
+
+//모듈패턴
+var Counter = (function() {
+    //private 변수
+    var num = 0;
+
+    //외부로 공개할 데이터나 메서드를 프로퍼티로 추가한 객체를 반환한다.
+    return {
+        increase() {
+            return ++num;
+        },
+        decrease() {
+            return --num;
+        }
+    };
+}());
+
+console.log(Counter.num); //undefined
+console.log(Counter.increase());
+console.log(Counter.increase());
+console.log(Counter.decrease());
+console.log(Counter.decrease());
+
+
+</script>
+    
+</body>
+</html>

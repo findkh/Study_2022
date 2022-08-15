@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스코프</title>
+</head>
+<body>
+<script>
+/*
+1. 스코프
+    모든 식별자는 자신이 선언된 위치에 의해 다른 코드가 식별자 자신을 참조할 수 있는 유효범위가 결정된다. 이를 스코프라한다.
+    식별자가 유효한 범위를 말한다.
+    식별자 결정(identifier resolution) : 자바스크립트 엔진이 이름이 같은 두 개의 변수 중에서 어떤 변수를 참조해야 할 것인지를 결정하는 것이다.
+    스코프를 통해 식별자인 변수 이름의 충돌을 방지하여 같은 이름의 변수를 사용할 수 있게 한다.
+2. 스코프의 종류
+    전역에서 선언된 변수는 전역 스코프를 갖는 전역 변수이고, 지역에서 선언된 변수는 지역 스코프를 갖는 지역 변수다.
+    전역 변수는 어디서든 참조할 수 있다.
+    지역이란 함수 몸체 내부를 말하고 지역은 지역 스코프를 만든다. 지역 변수는 자신의 지역 스코프와 하위 지역 스코프에서 유효하다.
+3. 스코프 체인(scope chain)
+    모든 스코프는 하나의 계층적 구조로 연결되며, 모든 지역 스코프의 최사우이 스코프는 전역 스코프다.
+    스코프가 계층적으로 연결된 것은 스코프 체인이라 한다.
+    변수를 참조할 떄 자바스크립트 엔진은 스코프 체인을 통해 변수를 참조하는 코드의 스코프에서 시작하여 상위 스코프 방향으로 이동하며 선언된 변수를 검색(identifier resolution)한다.
+    이를 통해 상위 스코프에서 선언한 변수를 하위 스코프에서도 참조할 수 있다.
+    렉시컬 환경(Lexical Environment) : 스코프 체인은 실행 컨텍스트의 렉시컬 환경을 단방향으로 연결한 것이다.
+    전역 렉시컬 환경은 코드가 로드되면 곧바로 생성되고 함수의 렉시컬 환경은 함수가 호출되면 곧바로 생성된다.
+3-1. 스코프 체인에 의한 변수 검색
+    스코프 체인을 따라 변수를 참조하는 코드의 스코프에서 시작해서 상위 스코프 방향으로 이동하며 선언된 변수를 검색한다.
+    상위 스코프에서 유효한 변수는 하위 스코프에서 자유롭게 참조할 수 있지만 하위 스코프에서 유효한 변수를 상위 스코프에서 참조할 수 없다.
+4. 함수 레벨 스코프
+    지역은 함수 몸체 내부를 말하고 지역은 지역 스코프를 만든다.
+    var 키워드로 선언된 변수는 오로지 함수의 코드 블록만을 지역 스코프로 인정하고 이런 특성을 함수 레벨 스코프라 한다.
+    let, const 키워드는 블록 레벨 스코프를 지원한다.
+5. 렉시컬 스코프
+    동적 스코프(dynamic scope) : 함수가 호출되는 시점에 동적으로 상위 스코프를 결정한다.
+    정적 스코프(static scope) = 렉시컬 스코프(lexical scope) : 함수 정의가 평가되는 시점에 상위 스코프가 정적으로 결정된다.
+    자바스크립트는 렉시컬 스코프, 정적 스코프를 따른다.
+    함수를 어디서 정의했는지에 따라 상위 스코프를 결정하기 때문에 함수의 상위 스코프는 언제나 자신이 정의한 스코프다.
+*/
+let let1 = 1; 
+
+if (true) {
+    let let2 = 2;
+    if (true) {
+        let let3 = 3;
+    }
+}
+
+function foo() {
+    let let4 = 4;
+
+    function bar() {
+        let let5 = 5;
+    }
+}
+console.log(let1);
+//console.log(let2); //Uncaught ReferenceError: let2 is not defined
+//console.log(let3); //Uncaught ReferenceError: let3 is not defined
+//console.log(let4); //Uncaught ReferenceError: let4 is not defined
+//console.log(let5); //Uncaught ReferenceError: let5 is not defined
+
+let x = 'global';
+
+function foo2() {
+    let x = 'local';
+    console.log(x);
+}
+
+foo2(); //local 
+
+console.log(x); //global
+
+//함수 레벨 스코프
+var x2 = 1;
+if (true) {
+    //var 키워드로 선언된 변수는 함수의 코드 블록만을 지역 스코프로 인정한다.
+    //함수 밖에서 var 키워드로 선언된 변수는 코드 블록 내에서 선언되었다 할지라도 모두 전역 변수다.
+    //따라서 x2는 전역변수이고, 이미 선언된 전역 변수가 있으므로 x2 변수는 중복 선언되어 변수 값이 변경된다.
+    var x2 = 10;
+}
+console.log(x2)
+
+//렉시컬 스코프
+var x3 = 1;
+function foo3() {
+    var x3 = 10;
+    bar3();
+}
+
+function bar3() {
+    console.log(x3);
+}
+
+foo3(); //1
+</script>
+</body>
+</html>
