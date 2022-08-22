@@ -29,6 +29,7 @@ import com.springbook.biz.board.BoardVO;
 	private final String BOARD_LIST = "select * from board order by seq desc";
 	private final String BOARD_LIST_T = "select * from board where title like '%'||?||'%' order by seq desc";
 	private final String BOARD_LIST_C = "select * from board where content like '%'||?||'%' order by seq desc";
+
 	
 //	@Autowired
 //	public void setSuperDataSource(DataSource dataSource) {
