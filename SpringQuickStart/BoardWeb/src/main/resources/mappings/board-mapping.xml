@@ -22,34 +22,52 @@
 	
 	<update id="updateBoard">
 		<![CDATA[
-		UPDATE BOARD SET
-		TITLE = #{title},
-		CONTENT = #{content}
-		WHERE SEQ = #{seq}
+			UPDATE BOARD SET
+			TITLE = #{title},
+			CONTENT = #{content}
+			WHERE SEQ = #{seq}
 		]]>
 	</update>
 	
 	<delete id="deleteBoard">
 		<![CDATA[
-		DELETE BOARD
-		WHERE SEQ = #{seq}
+			DELETE BOARD
+			WHERE SEQ = #{seq}
 		]]>
 	</delete>
 	
 	<select id="getBoard" resultType="board">
 		<![CDATA[
-		SELECT *
-		FROM BOARD
-		WHERE SEQ = #{seq}
+			SELECT *
+			FROM BOARD
+			WHERE SEQ = #{seq}
 		]]>
 	</select>
 	
 	<select id="getBoardList" resultMap="boardResult">
 		<![CDATA[
-		SELECT *
-		FROM BOARD
-		WHERE TITLE LIKE '%'||#{searchKeyword}||'%'
-		ORDER BY SEQ DESC
+			SELECT *
+			FROM BOARD
+			WHERE TITLE LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY SEQ DESC
+		]]>
+	</select>
+	
+	<select id="getBoardList_T" resultMap="boardResult">
+		<![CDATA[
+			SELECT *
+			FROM BOARD
+			WHERE TITLE LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY SEQ DESC
+		]]>
+	</select>
+	
+		<select id="getBoardList_c" resultMap="boardResult">
+		<![CDATA[
+			SELECT *
+			FROM BOARD
+			WHERE CONTENT LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY SEQ DESC
 		]]>
 	</select>
 </mapper>
