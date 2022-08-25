@@ -32,12 +32,14 @@ public class BoardDAOMybatis{
 	public BoardVO getBoard(BoardVO vo) {
 		System.out.println("mybatis로 getBoard() 기능 처리");
 		//검색 조건에 따른 분기 처리
-		if (vo.getSearchCondition().equals("TITLE")) {
-			return mybatis.selectOne("BoardDAO.getBoard_T", vo);
-		} else if (vo.getSearchCondition().equals("CONTENT")) {
-			return mybatis.selectOne("BoardDAO.getBoard_C", vo);
-		}
-		return null;
+//		if (vo.getSearchCondition().equals("TITLE")) {
+//			return mybatis.selectOne("BoardDAO.getBoard_T", vo);
+//		} else if (vo.getSearchCondition().equals("CONTENT")) {
+//			return mybatis.selectOne("BoardDAO.getBoard_C", vo);
+//		}
+//		return null;
+		
+		return (BoardVO) mybatis.selectList("boardDAO.getBoardList", vo);
 	}
 	
 	public List<BoardVO> getBoardList(BoardVO vo) {
