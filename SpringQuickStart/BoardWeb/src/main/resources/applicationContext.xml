@@ -14,25 +14,55 @@
 	<aop:aspectj-autoproxy/>
 	
 	<!-- DataSource 설정 -->
-	<context:property-placeholder location="classpath:config/database.properties" />
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${jdbc.driver}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.username}" />
-		<property name="password" value="${jdbc.password}" />
-	</bean>
+	<context:property-placeholder location="classpath:config/database.properties"/>
+		<bean destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
+			<property value="${jdbc.driver}" name="driverClassName"/>
+			<property value="${jdbc.url}" name="url"/>
+			<property value="${jdbc.username}" name="username"/>
+			<property value="${jdbc.password}" name="password"/>
+		</bean>
 	
-	<!-- spring JDBC 설정 -->
-	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-	
-	<!-- Transaction 설정 -->
-	<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="txManager">
+	<!-- Spring JDBC 설정 -->
+	<bean class="org.springframework.jdbc.core.JdbcTemplate" id="jdbcTemplate">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<!-- 트랜잭션 어드바이스 설정 -->
+	<!-- Transaction 설정 -->
+	<bean class="org.springframework.orm.jpa.JpaTransactionManager" id="txManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+	
+	<!-- Spring과 Mybatis 연동 설정 -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSession">
+		<property value="classpath:sql-map-config.xml" name="configLocation"> </property>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSession"/>
+	</bean>
+	
+	<!-- Spring과 JPA 연동 설정 -->
+	<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" id="jpaVendorAdapter"/>
+
+	<bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+		<property value="com.springbook.biz.board" name="packagesToScan"/>
+	
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>
+				<prop key="hibernate.id.new_generator_mappings">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+	</bean>
+
+
 	<tx:advice id="txAdvice" transaction-manager="txManager">
 		<tx:attributes>
 			<tx:method name="get*" read-only="true"/>
@@ -41,23 +71,7 @@
 	</tx:advice>
 	
 	<aop:config>
-		<aop:pointcut expression="execution(* com.springbook.biz..*(..))" id="txPointcut"/>
-		<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice" />
+		<aop:pointcut id="txPointcut" expression="execution(* com.springbook.biz..*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
 	</aop:config>
-	
-	<!-- mybatis 연동 -->
-	<!-- <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation" value="classpath:sql-map-config.xml" />
-	</bean> -->
-	
-	<!-- Spring과 mybatis 연동 설정 -->
-	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="configLocation" value="classpath:sql-map-config.xml"></property>
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
-	
-	<bean class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg ref="sqlSession"></constructor-arg>
-	</bean>
 </beans>

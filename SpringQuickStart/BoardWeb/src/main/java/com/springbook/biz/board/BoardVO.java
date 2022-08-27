@@ -1,22 +1,38 @@
 package com.springbook.biz.board;
 
-import java.sql.Date;
+
+
+import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 // VO(Value Object)는 레이어와 레이어 사이에서 관련된 데이터를 한꺼번에 주고받을 목적으로 사용하는 클래스(DTO라고도 함)
-
+@Entity
+@Table(name="BOARD")
 public class BoardVO {
+	@Id
+	@GeneratedValue
 	private int seq;
 	private String title;
 	private String writer;
 	private String content;
+	@Temporal(TemporalType.DATE)
 	private Date regDate;
 	private int cnt;
+	@Transient
 	private String searchCondition;
 	private String searchKeyword;
+	@Transient
 	private MultipartFile uploadFile;
 	public int getSeq() {
 		return seq;
