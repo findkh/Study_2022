@@ -20,9 +20,9 @@
     중복된 매개이름 변수를 사용하면 SyntaxError가 발생한다.
 5-4. with 문의 사용
     with 문을 사용하면 SyntaxError가 발생한다.
-6. stric mode 적용에 의한 변화
+6. strict mode 적용에 의한 변화
 6-1. 일반 함수 this
-    stric mode에서 함수를 일반 함수로서 호출하면 this에 undefined가 바인딩된다.
+    strict mode에서 함수를 일반 함수로서 호출하면 this에 undefined가 바인딩된다.
     생성자 함수가 아닌 일반 함수 내부에서는 this를 사용할 필요가 없기 때문이다. 이때 에러는 발생하지 않는다.
 6-2. arguments 객체
     strict mode에서는 매개변수에 전달된 인수를 재할당하여 변경해도 arguments 객체에 반영되지 않는다.
