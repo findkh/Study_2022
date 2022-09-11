@@ -13,7 +13,73 @@
         - 클래스 내의 모든 코드에는 암묵적으로 strict mode가 지정되어 실행되며 strict mode를 해제할 수 없지만 생성자 함수는 암묵적으로 strict mode가 지정되지 않는다.
         - 클래스의 constructor, 프로토타입 메서드, 정적 메서드는 모두 프로퍼티 어트리뷰트 [[Enumerable]]의 값이 false다. 열거되지 않는다.
 2. 클래스 정의
-    
+    클래스는 class 키워드를 사용하여 정의한다.
+    클래스를 표현식으로 정의할 수 도 있다. 클래스는 함수다. 클래스는 값처럼 사용할 수 있는 일급 객체다.
+3. 클래스 호이스팅
+    클래스는 함수로 평가된다.
+    클래스는 클래스 정의 이전에 참조할 수 없다.
+    클래스 선언문도 변수 선언, 함수 정의와 마찬가지로 호이스팅이 발생한다.
+    단 클래스는 let, const 키워드로 선언한 변수처럼 호이스팅된다. 따라서 클래스 선언문 이전에 일시적 사각지대에 빠지기 때문에 호이스팅이 발생하지 않는 것처럼 동작한다.
+4. 인스턴스 생성
+    클래스는 생성자 함수이며 new 연산자와 함께 호출되어 인스턴스를 생성한다.
+5. 메서드
+    클래스 몸체에는 0개 이상의 메서드만 선언할 수 있다. 클래스 몸체에서 정의할 수 있는 메서드는 constructor(생성자), 프로토타입 메서드, 정적 메서드의 세가지가 있다.
+5-1. constructor
+    constructor는 인스턴스를 생성하고 초기화하기 위한 특수한 메서드다. constructor는 이름을 변경할 수 없다.
+    constructor 내부에서 명시적으로 this가 아닌 다른 값을 반환하는 것은 클래스의 기본 동작을 훼손하므로 constructor 내부에서 return문을 반드시 생략해야한다.
+5-3. 프로토타입 메서드
+    생성자 함수를 사용하여 인스턴스를 생성하는 경우 프로토타입 메서드를 생성하기 위해서 명시적으로 프로토타입 메서드를 추가해야 한다.
+5-4. 정적 메서드
+    생성자 함수의 경우 정적 메서드를 생성하기 위해서는 명시적으로 생성자 함수에 메서드를 추가해야 한다.
+5-5. 클래스에서 정의한 메서드의 특징
+    - function 키워드를 생략한 메서드 축약 표현을 사용한다.
+    - 객체 리터럴과는 다르게 클래스에 메서드를 정의할 때는 콤마가 필요 없다.
+    - 암묵적으로 strict mode로 실행된다.
+    - for...in 문이나 Object.keys 메서드 등으로 열거할 수 엇다. 즉 프로퍼티의 열거 가능 여부를 나타내며, 불리언 값을 갖는 프로퍼티 어트리뷰트 [[Enumerable]]의 값이 false다.
+    - 내부 메서드 [[Constructor]]를 갖지 않는 non-constructor다. 따라소 new 연산자와 함께 호출할 수 없다.
+6. 클래스의 인스턴스 생성과정
+    new 연산자와 함께 클래스를 호출하면 생성자 함수와 마찬가지로 클래스의 내부 메서드[[Construct]]가 호출된다. 클래스는 new 연산자 없이 호출할 수 없다.
+    - 인스턴스 생성과 this 바인딩
+    - 인스턴스 초기화
+    - 인스턴스 반환
+7. 프로퍼티
+7-1. 인스턴스 프로퍼티
+    인스턴스 프로퍼티는 constructor 내부에서 정의해야 한다.
+    constructor 내부에서 this에 추가한 프로퍼티는 언제나 클래스가 생성한 인스턴스의 프로퍼티가 된다.
+7-2. 접근자 프로퍼티
+    접근자 프로퍼티를 클래스에서도 사용할 수 있다.
+7-3. 클래스 필드 정의 제안
+    클래스 필드는 클래스 기반 객체지향 언어에서 클래스가 생성할 인스턴스의 프로퍼티를 가리키는 용어로, 자바 클래스 필드는 클래스 내부에서 변수처럼 사용된다.
+    자바스크립트의 클래스에서 인스턴스 프로퍼티를 선언하고 초기화하려면 반드시 constructor 내부에서 this에 프로퍼티를 추가해야 한다.
+7-4. private 필드 정의 제안
+    자바스크립트는 캡슐화를 완전하게 지원하지 않는다.
+7-5. static 필드 정의 제안
+8. 상속에 의한 클래스 확장
+8-1. 클래스 상속과 생성자 함수 상속
+    프로토타입 기반 상속은 프로토타입 체인을 통해 다른 객체의 자산을 상속받는 개념이지만, 상속에 의한 클래스 확장은 기존 클래스를 상속받아 새로운 클래스를 확장하여 정의한다.    
+8-2. extends 키워드
+    상속을 통해 클래스를 확장하려면 extends 키우더를 사용하여 상속받을 클래스를 정의한다.
+    상속을 통해 확장된 클래스를 서브클래스, 파생 클래스, 자식 클래스
+    서브 클래스에게 상속된 클래스를 수퍼 클래스, 베이스 클래스, 부모 클래스
+    수퍼 클래스와 서브 클래스는 인스턴스의 프로토타입과 클래스 간의 프로토타입 체인도 생성한다. 이를 통해 프로토타입 메서드, 정적 메서드 모두 상속이 가능하다.
+8-3. 동적 상속
+    extends 키워드는 클래스뿐만 아니라 생성자 함수를 상속받아 클래스를 확장할 수 있다. 단 extends 키워드 앞에는 반드시 클래스가 와야 한다.
+8-4. 서브클래스의 constructor
+    클래스에서 constructor를 생략하면 클래스에 비어있는 constructor가 암묵적으로 정의 된다.
+    서브클래스에서 constructor를 생략하면 클래스에 consructor가 암묵적으로 정의된다.
+    수퍼 클래스와 서브 클래스 모두 constructor를 생략하면 빈 객체가 생성된다. 프로퍼티를 소유하는 인스턴스를 생성하려면 constructor 내부에서 인스턴스에 프로퍼티를 추가해야 한다.
+8-5. super 키워드
+    super 키워드는 함수처럼 호출할 수도 있고 this와 같이 식별자처럼 참조할 수 있는 특수한 키워드다. 
+        - super를 호출하면 수퍼클래스의 constructor를 호출한다.
+        - super를 참조하면 수퍼클래스의 메서드를 호출할 수 있다.
+8-6. 상속 클래스의 인스턴스 생성 과정
+    - 서브 클래스의 super 호출
+    - 수퍼 클래스의 인스턴스 생성과 this 바인딩
+    - 수퍼 클래스의 인스턴스 초기화
+    - 서브 클래스 constructor로의 복귀와 this 바인딩
+    - 서브 클래스의 인스턴스 초기화
+    - 인스턴스 반환
+8-7. 표준 빌트인 생성자 함수 확장
 */   
 //ES5 생성자 함수
 var Person = (function() {
@@ -34,3 +100,37 @@ var Person = (function() {
 //인스턴스 생성
 var me = new Person('Lee');
 me.sayHi();
+
+//수퍼클래스
+class Rectangle {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    getArea() {
+        return this.width * this.height;
+    }
+}
+
+//서브클래스
+class ColorRectangle extends Rectangle {
+    constructor(width, height, color) {
+        super(width, height);
+        this.color = color;
+    }
+
+    //메서드 오버라이딩
+    toString() {
+        return super.toString() + `, color= ${this.color}`;
+    }
+}
+
+const colorRectangle = new ColorRectangle(2, 4, 'red');
+console.log(colorRectangle); //ColorRectangle { width: 2, height: 4, color: 'red' }
+
+//상속을 통해 getArea 메서드 호출
+console.log(colorRectangle.getArea()); //8
+
+//오버라이딩된 toString 메서드 호출
+console.log(colorRectangle.toString()); //[object Object], color= red
