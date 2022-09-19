@@ -1,5 +1,6 @@
 package org.zerock.springex.mapper;
 
+import jdk.vm.ci.meta.Local;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,5 +84,23 @@ public class TodoMapperTests {
         log.info(responseDTO);
 
         responseDTO.getDtoList().stream().forEach(todoDTO -> log.info(todoDTO));
+    }
+
+    @Test
+    public void testSelectSearch() {
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .page(1)
+                .size(10)
+                .types(new String[]{"t","w"})
+                .keyword("희희")
+                //.finished(true)
+                .from(LocalDate.of(2021,12,01))
+                .to(LocalDate.of(2022,12,31))
+                .build();
+        List<TodoVO> voList = todoMapper.selectList(pageRequestDTO);
+
+        voList.forEach(vo -> log.info(vo));
+
+        log.info(todoMapper.getCount(pageRequestDTO));
     }
 }
