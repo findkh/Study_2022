@@ -8,13 +8,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
 import org.zerock.b01.domain.Board;
 import org.zerock.b01.domain.Reply;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 
+import javax.transaction.Transactional;
+
 @SpringBootTest
 @Log4j2
 public class ReplyRepositoryTests {
+
+    @Autowired
+    private BoardRepository boardRepository;
+
     @Autowired
     private ReplyRepository replyRepository;
 
@@ -45,5 +52,12 @@ public class ReplyRepositoryTests {
         });
     }
 
-
+    @Test
+    @Transactional
+    @Commit
+    public void testRemoveAll() {
+        Long bno = 1L;
+        replyRepository.deleteByBoard_Bno(bno);
+        boardRepository.deleteById(bno);
+    }
 }

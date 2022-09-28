@@ -9,11 +9,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.zerock.b01.domain.Board;
+import org.zerock.b01.domain.BoardImage;
+import org.zerock.b01.dto.BoardListAllDTO;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -108,25 +112,93 @@ public class BoardRepositoryTests {
         result.getContent().forEach(board -> log.info(board));
     }
 
+//    @Test
+//    public void testSearchReplyCount() {
+//        String[] types = {"t","c","w"};
+//
+//        String keyword = "1";
+//
+//        Pageable pageable = PageRequest.of(0,10, Sort.by("bno").descending());
+//
+//        Page<BoardListReplyCountDTO> result = boardRepository.searchWithReplyCount(types, keyword, pageable );
+//
+//        log.info(result.getTotalPages());
+//
+//        log.info(result.getSize());
+//
+//        log.info(result.getNumber());
+//
+//        log.info(result.hasPrevious() +": " + result.hasNext());
+//
+//        result.getContent().forEach(board -> log.info(board));
+//    }
+
     @Test
-    public void testSearchReplyCount() {
-        String[] types = {"t","c","w"};
+    public void testInsertWithImages() {
+        Board board = Board.builder()
+                .title("Image Test")
+                .content("첨부파일 테스트")
+                .writer("tester")
+                .build();
 
-        String keyword = "1";
+        for(int i = 0; i < 3; i++) {
+            board.addImage(UUID.randomUUID().toString(), "file" + i + ".jpg");
+        }
 
-        Pageable pageable = PageRequest.of(0,10, Sort.by("bno").descending());
-
-        Page<BoardListReplyCountDTO> result = boardRepository.searchWithReplyCount(types, keyword, pageable );
-
-        log.info(result.getTotalPages());
-
-        log.info(result.getSize());
-
-        log.info(result.getNumber());
-
-        log.info(result.hasPrevious() +": " + result.hasNext());
-
-        result.getContent().forEach(board -> log.info(board));
+        boardRepository.save(board);
     }
 
+    @Test
+    public void testReadWithImages() {
+
+        //반드시 존재하는 bno로 확인
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
+
+        Board board = result.orElseThrow();
+
+        //기존 첨부 파일 삭제
+        board.clearImages();
+
+
+//        for (BoardImage boardImage : board.getImageSet()) {
+//            log.info(boardImage);
+//        }
+        //새로운 첨부파일
+        for (int i = 0; i < 2; i++) {
+            board.addImage(UUID.randomUUID().toString(), "updatefile" + i + ".jpg");
+        }
+        boardRepository.save(board);
+    }
+
+    @Test
+    public void testInsertAll() {
+        for(int i = 1; i <= 100; i++) {
+            Board board = Board.builder()
+                    .title("Title.." + i)
+                    .content("content.." + i)
+                    .writer("writer.." + i)
+                    .build();
+            for(int j = 0; j < 3; j++) {
+                if(i % 5 == 0) {
+                    continue;
+                }
+                board.addImage(UUID.randomUUID().toString(), i + "file" + j + ".jpg");
+            }
+            boardRepository.save(board);
+        }
+    }
+    
+    @Transactional
+    @Test
+    public void testSearchReplyCount() {
+        Pageable pageable = PageRequest.of(0,10,Sort.by("bno").descending());
+
+//        boardRepository.searchWithAll(null, null, pageable);
+        Page<BoardListAllDTO> result = boardRepository.searchWithAll(null, null, pageable);
+
+        log.info("==================================");
+        log.info(result.getTotalElements());
+
+        result.getContent().forEach(boardListAllDTO -> log.info(boardListAllDTO));
+    }
 }
