@@ -9,10 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.zerock.b01.dto.UploadFileDTO;
 import org.zerock.b01.dto.UploadResultDTO;
 
@@ -84,26 +81,33 @@ public class UpDownController {
         return ResponseEntity.ok().headers(headers).body(resource);
     }
 
-    @ApiOperation(value = "remove 파일", notes = "DELETE 방식으로 첨부파일 삭제")
-    @GetMapping("/remove/{fileName}")
-    public Map<String,Boolean> removeFile(@PathVariable String fileName) {
-        Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
+    @ApiOperation(value = "remove 파일", notes = "DELETE 방식으로 파일 삭제")
+    @DeleteMapping("/remove/{fileName}")
+    public Map<String,Boolean> removeFile(@PathVariable String fileName){
+
+        Resource resource = new FileSystemResource(uploadPath+File.separator + fileName);
         String resourceName = resource.getFilename();
-        Map<String,Boolean> resultMap = new HashMap<>();
+
+        Map<String, Boolean> resultMap = new HashMap<>();
         boolean removed = false;
 
         try {
             String contentType = Files.probeContentType(resource.getFile().toPath());
             removed = resource.getFile().delete();
 
-            if(contentType.startsWith("image")) {
-                File thumbnailFile = new File(uploadPath + File.separator + "s_" + fileName);
+            //섬네일이 존재한다면
+            if(contentType.startsWith("image")){
+                File thumbnailFile = new File(uploadPath+File.separator +"s_" + fileName);
                 thumbnailFile.delete();
             }
-        }catch (Exception e) {
+
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
+
         resultMap.put("result", removed);
+
         return resultMap;
     }
+
 }
