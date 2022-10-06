@@ -40,7 +40,7 @@ public class AccessTokenException extends RuntimeException {
         this.token_error = error;
     }
 
-    public void sendResponsError(HttpServletResponse response) {
+    public void sendResponseError(HttpServletResponse response) {
         response.setStatus(token_error.getStatus());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
