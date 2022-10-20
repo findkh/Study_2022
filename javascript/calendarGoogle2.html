@@ -29,8 +29,8 @@
       let requestMonth = new Set();
       let savedCalendar = new Set();
 
-      const YOUR_CLIENT_ID = '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com'; //클라이언트 아이디
-      const YOUR_REDIRECT_URI = 'http://localhost:5500/javascript/calendarGoogle.html'; //리다이렉트 url oauth 클라이언트에서 설정한 것과 같아야함
+      //const YOUR_CLIENT_ID = '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com'; //클라이언트 아이디
+      //const YOUR_REDIRECT_URI = 'http://localhost:5500/javascript/calendarGoogle.html'; //리다이렉트 url oauth 클라이언트에서 설정한 것과 같아야함
       
       let fragmentString = location.hash.substring(1);
       let params = {};
@@ -210,8 +210,9 @@
          form.setAttribute('action', oauth2Endpoint);
       
          // Parameters to pass to OAuth 2.0 endpoint.
-         let params = {'client_id': '1049161847897-p6ca7vfcsisnptd88rki5ifjh9slifne.apps.googleusercontent.com',
-                     'redirect_uri': 'http://localhost:5500/javascript/calendarGoogle.html',
+         let params = {'client_id': '629491280053-mc3uiv90jsbku1ulhhl9v111s73cvjhd.apps.googleusercontent.com',
+                     //'redirect_uri': 'http://localhost:5500/javascript/calendarGoogle.html',
+                     'redirect_uri': 'https://profile.example.com/accounts/google/login/callback',                     
                      'scope': 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.readonly',
                      'state': 'requestCalendarList',
                      'include_granted_scopes': 'true',
