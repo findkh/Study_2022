@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM</title>
+    <style>
+        .green {color:green}
+        .red {color:red}
+        .blue {color:blue}
+    </style>
+</head>
+<body>
+
+
+<ul id="fruits">
+    <li class="red">Apple</li>
+    <li class="red">Banana</li>
+    <li class="red">Orange</li>
+</ul>
+
+<ul id="fruits2">
+    <li class="green">Apple</li>
+    <li class="green">Banana</li>
+    <li class="green">Orange</li>
+</ul>
+<script>
+/*
+2-6. HTMLCollection과 NodeList
+    HTMLCollection
+        getElementsByTagName, getElementsByClassName 메서드가 반환하는 HTMLCollection 객체는 노드 객체의 상태 변화를 실시간으로 반영하는 살아 있는 DOM 컬렉션 객체다. 
+        HTMLCollection 객체는 실시간으로 노드 객체의 상태 변경을 반영하여 요소를 제거할 수 있기 때문에 for 문으로 순회하면서 노드 객체의 상태를 변경해야할 떄는 주의 해야 한다.
+        for 문을 역방향으로 순회하면 문제를 해결 할 수 있다.
+        또는 부작용을 발생시키는 원인은 HTMLCollection 객체를 사용하지 않는 것이다.
+    NodeList
+        querySelectorAll 메서드는 DOM 컬렉션 객체인 NodeList 객체를 반환한다. 
+        NodeList는 실시간으로 노드 객체의 상태 변경을 반영하지 않는 객체다.
+        NodeList 객체는 대부분의 경우 노드 객체의 상태 변경을 실시간으로 반영하지 않고 과거의 정적 상태를 유지하는 non-live 객체로 동작한다.
+        하지만 childNodes 프로퍼티가 반환하는 nodeList 객체는 HTMLCollection 객체와 같이 실시간으로 노드 객체의 상태 변경을 반영하는 live 객체로 동작하므로 주의가 필요하다.
+*/
+const $elems = document.getElementsByClassName('red');
+console.log($elems); //HTMLCollection(3) [li.red, li.red, li.red]
+
+// for(let i = 0; i < $elems.length; i++) {
+//     console.log($elems);
+//     $elems[i].className = 'blue';
+// }
+//console.log($elems) //HTMLCollection [li.red]
+
+// for(let i = $elems.length -1; i >= 0; i--) {
+//     $elems[i].className = 'blue';
+// }
+
+//유사 배열 객체이면서 이터러블인 HTMLCollection을 배열로 변환하여 순회
+[...$elems].forEach(elem => elem.className = 'blue');
+
+//NodeList
+const $elems2 = document.querySelectorAll('.green');
+$elems2.forEach(elem2 => elem2.className = 'red')
+</script>
+</body>
+</html>

@@ -7,11 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <ul>
+    <ul id="fruits">
         <li id="apple">Apple</li>
         <li id="banana">Banana1</li>
         <li id="orange">Orange</li>
         <li id="banana">Banana2</li>
+        <li class="fruit apple">Apple</li>
+        <li class="fruit banana ">Banana</li>
+        <li class="fruit Orange">Orange</li>
     </ul>
     <div id="foo"></div>
 <script>
@@ -55,6 +58,21 @@ DOM은 HTML 문서의 계층적 구조와 정보를 표현하며 이를 제어�
 2-2. 태그 이름을 이용한 요소 노드 취득
     Document.prototype/Element.prototype.getElementsByTagName 메서드는 인수로 전달한 태그 이름을 갖는 모든 요소 노드를 탐색하여 반환한다.
     여러 개의 요소 노드 객체를 갖는 DOM 컬렉션 객체은 HTMLCollection 객체를 반환한다. 
+2-3. class를 이용한 요소 노드 취득
+    Document.prototype/Element.prototype.getElementsByClassName 메서드는 인수로 전달한 class 어트리뷰트 값을 갖는 모든 요소 노드들을 탐색하여 반환한다.
+    인수로 전달할 class 값은 공백으로 구분하여 여러 개의 class를 지정할 수 있다.
+2-4. CSS 선택자를 이용한 요소 노드 취득
+    CSS 선택자는 스타일을 적용하고자 하는 HTML 요소를 특정할 때 사용하는 문법이다.
+    Document.prototype/Element.prototype.querySelector 메서드는 인수로 전달한 CSS 선택자를 만족시키는 하나의 요소 노드를 탐색하여 반환한다.
+        - 인수로 전달한 CSS 선택자를 만족 시키는 요소 노드가 여러 개인 경우 첫 번쨰 요소 노드만 반환한다.
+        - 인수로 전달된 CSS 선택자를 만족시키는 요소 노드가 존재하지 않는 경우 null을 반환한다.
+        - 인수로 전달한 CSS 선택자가 문법에 맞지 않는 경우 DOMException 에러가 발생한다.
+    Document.prototype/Element.prototype.querySelectorAll 메서드는 인수로 전달한 CSS 선택자를 만족시키는 모든 요소 노드를 탐색하여 반환한다.
+    NodeList는 유사 배열 객체이면서 이터러블이다.
+        - 인수로 전달된 CSS 선택자를 만족시키는 요소가 존재하지 않는 경우 빈 NodeList 객체를 반환한다.
+        - 인수로 전달한 CSS 선택자가 문법에 맞지 않는 경우 DOMException 에러가 발생한다.
+2-5. 특정 요소 노드를 취득할 수 있는지 확인
+    Element.prototype.matches 메서드는 인수로 전달한 CSS 선택자를 통해 특정 요소 노드를 취득할 수 있는지 확인한다.
 */
 let $elem = document.getElementById('banana');//<li id="banana" style="color: red;">Banana1</li>
 $elem.style.color = 'red';
@@ -66,7 +84,45 @@ console.log(foo === document.getElementById('foo')); //true
 delete foo;
 //암묵적 전역으로 생성된 전역 프로퍼티는 삭제되지만 전역 변수는 삭제되지 않는다.
 console.log(foo); //<div id="foo"></div>
+
+const $classElems = document.getElementsByClassName('fruit');
+[... $classElems].forEach(item => {item.style.color='green'})
+
+let $classApple = document.getElementsByClassName('fruit apple');
+[...$classApple].forEach(item => {item.style.color = 'blue'});
+
+//maches 메서드
+const $apple = document.querySelector('.apple');
+console.log($apple.matches('#fruits > li.apple' )); //true
+console.log($apple.matches('#fruits > li.banana')); //false
 </script>
+
+<style>
+/* CSS 선택자
+전체 선택 */
+* { color: red };
+/* 태그 선택자 ex) p태그 선택 */
+p { color: red};
+/* id 선택자 */
+#foo { color: red};
+/* class 선택자 */
+.class { color: red};
+/* 어트리뷰트 선택자 : input 요소 중에 type 어트리뷰트 값이 text인 요소 모두 선택 */
+input[type=text] { color: red};
+/* 후손 선택자 : div 요소의 후손 요소 중 p 요소를 모두 선택 */
+div p {color: red};
+/* 자식 선택자 : div 요소의 자식 요소 중 p요소를 모두 선택 */
+div > p {color: red};
+/* 인접 형제 선택자 : p 요소의 형제 요소 중에 p 요소 바로 뒤에 위치하는 ul 요소를 선택 */
+div + ul { color : red};
+/* 일반 형제 선택자: p 요소의 형제 요소 중에 p 요소 뒤에 위치하는 ul 요소를 모두 선택 */
+div ~ ul {color: red};
+/* 가상 클래스 선택자: hover 상태인 a 요소를 모두 선택 */
+a:hover {color:red};
+/* 가상 요소 선택자 : p요소의 콘텐츠 앞에 위치하는 공간을 선택
+    일반적으로 content 프로퍼티와 함께 사용된다.*/
+p::before{color:red};
+</style>
 
 </body>
 </html>
