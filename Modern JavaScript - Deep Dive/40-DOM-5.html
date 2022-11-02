@@ -20,6 +20,15 @@
 <ul id="fruits">
     <li>Apple</li>
 </ul>
+
+<ul id="fruits2">
+</ul>
+
+<ul id="family">
+</ul>
+
+<ul id="lego">
+</ul>
 <script>
 /*
 6. DOM 조작
@@ -51,8 +60,36 @@
             Node.prototype.appendChild 메서드를 사용하여 텍스트 노드와 부자 관계로 연결한 요소 노드를 #fruits 요소 노드의 마지막 자식 요소로 추가한다.
             이과정에서 새롭게 생성한 요소 노드가 DOM에 추가된다.
 6-4. 복수의 노드 생성과 추가
-    
-
+    컨테이너 요소노드 추가
+    DocumentFragment 노드 사용
+        DocumentFragment 노드는 기존 DOM과 별도로 존재하므로 DocumentFragment 노드에 자식 노드를 추가하여도 기존 DOM에는 어떠한 변경도 발생하지 않는다.
+        또한 DocumentFragment 노드를 DOM에 추가하면 자신은 제거되고 자신의 자식 노드만 DOM에 추가된다.
+        document.prototype.createDocumentFragment 메서드는 비어 있는 DocumentFragment 노드를 생성하여 반환한다.
+        실제로 DOM 변경이 발생하는 것은 한 번뿐이며 리플로우와 리페인트도 한 번만 실행된다.
+        따라서 여러 개의 요소 노드를 DOM에 추가하는 경우 DocumentFragment 노드를 사용하는 것이 더 효율적이다.
+6-5. 노드 삽입
+    - 마지막 노드로 추가
+        Node.prototype.appendChild 메서드는 인수로 전달 받은 노드를 자신을 호출한 노드의 마지막 자식 노드로 DOM에 추가한다.
+        이 때 노드를 추가할 위치를 지정할 수 없고 언제나 마지막 자식 노드로 추가한다.
+    - 지정한 위치에 노드 삽입
+        Node.prototype.insertBefore(newNode, childNode) 메서드는 첫 번째 인수로 전달받은 노드를 두 번째 인수로 전달받은 노드 앞에 삽입한다.
+        두 번째 인수로 전달 받은 노드는 반드시 insertBefore 메서드를 호출한 노드의 자식 노드여야 한다. 그렇지 않으면 DOMException 에러가 발생한다.
+        두 번째 인수로 전달 받은 노드가 null이면 첫 번째 인수로 전달 받은 노드를 insertBefore 메서드를 호출한 노드의 마지막 자식 노드로 추가된다.(=appendChild 메서드와 동일)
+6-6. 노드 이동
+    DOM에 이미 존재하는 노드를 appendChild 또는 insertBefore 메서드를 사용하여 DOM에 다시 추가하면 현재 위치에서 노드를 제거하고 새로운 위치에 노드를 추가한다.
+    (노드가 이동한다.)
+6-7. 노드 복사
+    Node.prototype.cloneNode([deep:true|false])메서드는 노드의 사본을 생성하여 반환한다.
+    매개변수 deep에 true를 인수로 전달하면 노드를 깊은 복사하여 모든 자손 노드가 포함된 사본을 생성하고, false를 인수로 전달하거나 생략하면 노드를 얕은 복사하여 노드 자신만의 사본을 생성한다.
+    얕은 복사로 생성된 요소 노드는 자손 노드를 복사하지 않으므로 텍스트 노드도 없다.
+6-8. 노드 교체
+    Node.prototype.replaceChild(newChild, oldChild) 메서드는 자신을 호출한 노드의 자식 노드를 다른 노드로 교체한다.
+    첫 번째 매개 변수 newChild에 교체할 새로운 노드를 인수로 전달하고,
+    두 번째 매개 변수 oldChild에는 이미 존재하는 교체될 노드를 인수로 전달한다. oldChild 매개변수에 인수로 전달한 노드는 replaceChild 메서드를 호출한 노드의 자식 노드여야 한다.
+    oldChild 노드가 교체 되고 oldChild 노드는 DOM에서 제거된다.
+6-9. 노드 삭제
+    Node.prototype.removeChild(child) 메서드는 child 매개변수에 인수로 전달한 노드를 DOM에서 삭제한다.
+    인수로 전달한 노드는 removeChild 메서드를 호출한 노드의 자식 노드여야한다.
 */
 console.log(document.getElementById('foo').innerHTML); //Hello<span>world!</span>
 document.getElementById('foo').innerHTML = 'He <span>there!</span>'
@@ -72,6 +109,93 @@ let textNode = document.createTextNode('Banana');
 $li.appendChild(textNode);
 //4. $li 요소 노드를 #fruits 요소 노드의 마지막 자식 노드로 추가.
 $fruits.appendChild($li);
+
+//복수의 노드 생성과 추가
+let $fruits2 = document.getElementById('fruits2');
+['Apple', 'Banana', 'Orange'].forEach(text => {
+    //1. 요소 노드 생성
+    let $li2 = document.createElement('li');
+    //2. 텍스트 노드 생성
+    let textNode2 = document.createTextNode(text);
+    //3. 텍스트노드를 $li2 요소 노드의 자식 노드로 추가
+    $li2.appendChild(textNode2);
+    //4. $li2 요소 노드를 #fruits 요소 노드의 마지막 자식 노드로 추가
+    $fruits2.appendChild($li2);
+})
+
+//위와 같은 방법은 DOM을 여러번 변경해야 하므로 컨테이너 요소 사용
+//컨테이너요소를 자식으로 추가하면 DOM은 한 번만 변경된다.
+let family = document.getElementById('family');
+//컨테이너 요소 노드 생성
+let container = document.createElement('div');
+['Sudal', 'Hee', 'Hafa'].forEach(text => {
+    //1. 요소 노드 생성
+    let li3 = document.createElement('li');
+    //2. 텍스트 노드 생성
+    let textNode3 = document.createTextNode(text);
+    //3. 텍스트 노드를 li3 요소 노드의 자식 노드로 추가
+    li3.appendChild(textNode3);
+    //4. li3 요소 노드를 컨테이너 요소의 마지막 자식 노드로 추가
+    container.appendChild(li3);
+});
+//5. 컨테이너 요소 노드를 family 요소 노드의 마지막 자식 노드로 추가
+family.appendChild(container);
+
+//컨테이너 요소 노드를 사용하는 것은 DOM을 한 번만 변경하므로 성능에 유리하지만 불필요한 컨테이너 요소가 추가되는 부작용이 있다.
+//DocumentFragment 노드 생성
+let lego = document.getElementById('lego');
+//DocumentFragment 노드 생성
+let fragment = document.createDocumentFragment();
+['City', 'Modular','Castle'].forEach(text => {
+    //1. 요소 노드 생성
+    let li4 = document.createElement('li');
+    //2. 텍스트 노드 생성
+    let textNode4 = document.createTextNode(text);
+    //3. 텍스트 노드 li4 요소 노드의 자식 노드로 추가
+    li4.appendChild(textNode4)
+    //4. li4 요소 노드를 documentFragment 노드의 마지막 자식 노드로 추가
+    fragment.appendChild(li4);
+});
+//DocumentFragment 노드를 li4 요소 노드의 마지막 자식 노드로 추가
+lego.appendChild(fragment);
+
+//insertBefore 노드 삽입
+//요소 노드 생성
+let newLi = document.createElement('li');
+//텍스트 노드를 요소 노드의 마지막 자식 노드로 추가
+newLi.appendChild(document.createTextNode('Creator'));
+//li 요소 노드를 lego 요소 노드의 마지막 자식 요소 앞에 삽입
+lego.insertBefore(newLi, lego.lastElementChild);
+
+//노드 이동
+//이미 존재하는 요소 노드를 취득
+let [Modular, Creator] = lego.children;
+//이미 존재하는 Modular 요소 노드를 lego 요소 노드의 마지막 노드로 이동
+lego.appendChild(Modular); //Modular -> Creator -> Castle -> City
+//이미 존재하는 Creator 요소 노드를 마지막 자식 노드 앞으로 이동
+lego.insertBefore(Creator, lego.lastElementChild); //Creator -> Castle -> Modular -> City
+
+let sudal = document.getElementById('family');
+//sudal 요소를 얕은 복사하여 사본을 생성. 텍스트 노드가 없는 사본이 생성
+let shallowClone = sudal.cloneNode();
+//사본 요소 노드에 텍스트 추가
+shallowClone.textContent = 'hyun';
+family.appendChild(shallowClone);
+
+//family 요소를 깊은 복사하여 모든 자손 노드가 포함된 사본을 생성
+let deepClone = family.cloneNode(true);
+//사본 요소 노드를 family의 마지막 노드로 추가
+family.appendChild(deepClone)
+
+//노드 교체
+//기존 노드와 교체할 요소 노드를 생성
+let newChild = document.createElement('li');
+newChild.textContent = 'Melon';
+$fruits.replaceChild(newChild, $fruits.firstElementChild);
+
+//노드 삭제
+$fruits.removeChild($fruits.lastElementChild);
+
 </script>
 </body>
 </html>
