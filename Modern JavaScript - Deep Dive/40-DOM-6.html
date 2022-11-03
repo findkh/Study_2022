@@ -8,6 +8,11 @@
 </head>
 <body>
 <input id="user" type="text" value="sudal">
+
+<ul class="users">
+    <li id="1" data-user-id="7621" data-role="admin">Park</li>
+    <li id="2" data-user-id="3333" data-role="catName">Hafa</li>
+</ul>
 <script>
 /*
 7. 어트리뷰트
@@ -22,6 +27,30 @@
     HTML 어트리뷰트 값을 변경하려면 Element.prototype.setAttribute(attributeName, attributeValue) 메서드 사용
     특정 HTML 어트리뷰트가 존재하는지 확인하려면 Element.prototype.hasAttribute(attributeName) 메서드 사용
     특정 HTML 어트리뷰트를 삭제하려면 Element.prototype.removeAttribute 메서드 사용
+7-3. HTML 어트리뷰트 vs DOM 프로퍼티
+    요소 노드 객체에는 HTML 어트리뷰트에 대응하는 프로퍼티가 존재한다. 이 프로퍼티들은 HTML 어트리뷰트 값을 초기값으로 가지고 있다.
+    DOM 프로퍼티는 setter, getter 모두 존재하는 접근자 프로퍼치다. DOM 프로퍼티는 참조와 변경이 가능하다.
+    HTML 어트리뷰트의 역할은 HTML 요소의 초기 상태를 지정하는 것이다. HTML 어트리뷰트 값은 HTML 요소의 초기 상태를 의미하며 이는 변하지 않는다.
+    요소 노드는 2개의 상태, 즉 초기 상태와 최신 상태를 관리해야 한다. 요소 노드의 초기 상태는 어트리뷰트 노드가 관리하며, 요소 노드의 최신 상태는 DOM 프로퍼티가 관리한다.
+    - 어트리뷰트 노드
+        HTML 어트리뷰트로 지정한 HTML 요소의 초기 상태는 어트리뷰트 노드에서 관리한다.
+        어트리뷰트 노드가 관리하는 초기 상태 값을 취득하거나 변경하려면 getAttribute/setAttribute 메서드를 사용한다.
+    - DOM 프로퍼티
+        사용자가 입력한 최신 상태는 HTMl 어트리뷰트에 대응하는 요소노드의 DOM 프로퍼티가 관리한다.
+        DOM 프로퍼티는 사용자의 입력에 의한 상태 변화에 반응하여 언제나 최신 상태를 유지한다..
+    - HTML 어트리뷰트와 DOM 프로퍼티의 대응관계ㅖ
+        대부분의 HTML어트리뷰트는 HTML 어트리뷰트 이름과 동일한 DOM 프로퍼티와 1:1로 대응한다.
+        input 요소의 value 어트리뷰트는 value 프로퍼티와 1:1 대응한다. 하지만 value 어트리뷰트는 초기 상태를 value 프로퍼티는 최신 상태를 갖는다.
+        class 어트리뷰트는 className, classList 프로퍼티와 대응한다.
+        for 어트리뷰트는 htmlFor 프로퍼티와 1:1대응한다.
+        td 요소의 colspan 어트리뷰트는 대응하는 프로퍼티가 존재하지 않는다.
+        textContent 프로퍼티는 대응하는 어트리뷰트가 존재하지 않는다.
+        어트리뷰트 이름은 대문자를 구별하지 않지만 대응하는 프로퍼티 키는 카멜 케이스를 따른다.
+    - DOM 프로퍼티 값의 대응
+        getAttribute 메서드로 취득한 어트리뷰트 값은 언제나 문자열이다. 하지만 DOM 프로퍼티로 취닥한 최신 상태 값은 문자열이 아닐 수도 있다.
+7-4. data 어트리뷰트와 dataset 프로퍼티
+    data 어트리뷰트와 dataset 프로퍼티를 사용하면 HTML 요소에 정의한 사용자 정의 어트리뷰트와 자바스크립트 간에 데이터를 교환할 수 있다.
+    data 어트리뷰트의 값은 HTMLElement.dataset 프로퍼티로 취득할 수 있다.
 */
 
 let {attributes} = document.getElementById('user');
@@ -37,6 +66,12 @@ console.log(inputValue); //sudal
 //value 어트리뷰트 값 변경
 input.setAttribute('value', 'kh');
 console.log(input.getAttribute('value')); //kh
+
+let users = [...document.querySelector('.users').children];
+console.log(users)
+let user = users.find( user => user.dataset.userId = '7621')
+console.log(user.dataset.role)
+
 
 </script>
 </body>
