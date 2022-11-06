@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트</title>
+</head>
+<body>
+    <nav>
+        <ul id="fruits">
+            <li id="apple" class="active">APPLE</li>
+            <li id="banana">BANANA</li>
+            <li id="orage">ORANGE</li>
+        </ul>
+    </nav>
+    <div>선택된 내비게이션 아이템: <em class="msg">apple</em> </div>
+    
+
+<input type="text">
+<input type="checkbox">
+<button>Click me!</button>
+<input type="text" id="input2">
+<em class="message"></em>
+
+
+<style>
+    #fruits {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+    }
+    #fruits li {
+        width: 100px;
+        cursor: pointer;
+    }
+    #fruits .active {
+        color: red;
+        text-decoration: underline;
+    }
+</style>
+<script>
+/*
+5-1. 이벤트 객체의 상속 구조
+5-2. 이벤트 객체의 공통 프로퍼티
+    Event 인터페이스, 즉 Event.prototype에 정의되어 있는 이벤트 관련 프로퍼티는 UIEvent, CustomEvent, MouseEvent 등 모든 파생 이벤트 객체에 상속된다.
+    Event 인터페이스의 이벤트 관련 프로퍼티는 모든 이벤트 객체가 상속받는 공통 프로퍼티다.
+5-3. 마우스 정보 취득
+    click, dblclick, mousedown, mouseup, mousemove, mouseenter, mouseleave 이벤트가 발생하면 생성되는 MouseEvent 타입의 이벤트 객체는 다음과 같은 고유의 프로퍼티를 갖는다.
+        - 마우스 포인터의 좌표 정보를 나타내는 프로퍼티 : screenX/screenY, clientX/clientY, pageX/pageY, offsetX/offsetY
+        - 버튼 정보를 나타내는 프로퍼티 : altKey, ctrlKey, shiftke, button
+5-4. 키보드 정보 취득
+    keydown, keyup, keypress 이벤트가 발생하면 생성되는 KeyboardEvent 타입의 이벤트 객체는 altKey, ctrlKey, shiftKey, metaKey, key, keyCode 같은 고유의 프로퍼티를 갖는다.
+6. 이벤트 전파
+    DOM 트리 상에 존재하는 DOM 요소 노드에서 발생한 이벤트는 DOM 트리를 통해 전파된다. 이를 이벤트전파라고 한다.
+    생성된 이벤트 객체는 이벤트를 발생시킨 DOM 요소인 이벤트 타깃을 중심으로 DOM 트리를 통해 전파된다.
+        - 캡처링 단계 : 이벤트가 상위 요소에서 하위 요소 방향으로 전파
+        - 타깃 단계 : 이벤트가 이벤트 타깃에 도달
+        - 버블링 단계 : 이벤트가 하위 요소에서 상위 요소 방향으로 전파
+7. 이벤트 위임
+    이벤트 위임은 여러 개의 하위 DOM 요소에 각각 이벤트 핸들러를 등록하는 대신 하나의 상위 DOM 요소에 이벤트 핸들러를 등록하는 방법을 말한다.
+    이벤트 위임을 통해 상위 DOM 요소에 이벤트 핸들러를 등록하면 여러 개의 하위 DOM요소에 이벤트 핸들러를 등록할 필요가 없다.
+    또한 동적으로 하위 DOM 요소를 추가하더라도 일일이 추가된 DOM 요소에 이벤트 핸들러를 등록할 필요가 없다.
+*/
+let input = document.querySelector('input[type=text]');
+let checkbox = document.querySelector('input[type=checkbox]');
+let button = document.querySelector('button');
+let input2 = document.getElementById('input2');
+let em = document.querySelector('.message');
+
+//load 이벤트가 발생하면 Event 타입의 이벤트 객체가 생성된다.
+window.onload = console.log;
+
+//change 이벤트가 발생하면 Event 타입의 이벤트 객체가 생성된다.
+checkbox.onchange = console.log;
+
+//focus 이벤트가 발생하면 FocusEvent 타입의 이벤트 객체가 생성된다.
+input.onfocus = console.log;
+
+//input 이벤트가 발생하면 InputEvent 타입의 이벤트 객체 생성된다.
+input.oninput = console.log;
+
+//keyup 이벤트가 발생하면 KeyboardEvent 타입의 이벤트 객체가 생성된다.
+input.onkeyup = console.log;
+
+//click 이벤트가 발생하면 MouseEvent 타입의 이벤트 객체가 생성된다.
+button.onclick = console.log;
+
+input2.onkeyup = e => {
+    //e.key는 입력한 키 값을 문자열로 반환한다.
+    //입력한 키가 'Enter', 즉 엔터 키가 아니면 무시한다.
+    console.log(e.key)
+    if(e.key !== 'Enter') return;
+
+    //엔터키가 입력되면 현재까지 입력 필드에 입력된 값을 출력한다.
+    em.textContent = e.target.value;
+    e.target.value = '';
+};
+
+let $fruits = document.getElementById('fruits');
+let $msg = document.getElementsByClassName('.msg');
+console.log($msg)
+
+function activate({target}) {
+    console.log(target)
+    if(!target.matches('#fruits > li')) return;
+
+    [...$fruits.children].forEach($fruit => {
+        $fruits.classList.toggle('active', $fruits === target);
+        $msg.textContent = target.id;
+    });
+}
+
+$fruits.onclick = activate;
+
+
+</script>
+</body>
+</html>

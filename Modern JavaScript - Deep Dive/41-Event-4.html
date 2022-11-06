@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트</title>
+</head>
+<body>
+<a href="https://www.google.com">go Google</a>
+<input type="checkbox">
+
+<div class="container">
+    <button class="btn1">Botton1</button>
+    <button class="btn2">Botton2</button>
+    <button class="btn3">Botton3</button>
+</div>
+<div>
+    <button onclick="handleClick()">이벤트핸들러</button>
+    <button onclick="handleClick2(this)">이벤트핸들러2</button>
+</div>
+
+<div>
+    <button class="button1">0</button>
+    <button class="button2">0</button>
+</div>
+
+<div>
+    <label>User name<input type="text"></label>
+    <em class="message"></em>
+</div>
+<script>
+/*
+8. DOM 요소의 기본 동작 조작
+8-1. DOM 요소의 기본 동작 중단
+    이벤트 객체의 preventDefault 메서드는 DOM 요소의 기본 동작을 중단시킨다.
+8-2. 이벤트 전파 방지
+    이벤트 객체의 stopPropagation 메서드는 이벤트 전파를 중지시킨다.
+9. 이벤트 핸들러 내부의 this
+9-1. 이벤트 핸들러 어트리뷰트 방식
+    handleClick() 함수의 this는 window를 가르킨다.
+    이벤트 핸들러를 호출할 때 인수로 전달한 this는 이벤트를 바인딩한 DOM 요소를 가리킨다.
+9-2. 이벤트 핸들러 프로퍼티 방식과 addEventListener 메서드 방식
+    이벤트 핸들러 프로퍼티 방식과 addEventListener 메서드 방식 모두 이벤트 핸들러 내부의 this는 이벤트를 바인딩한 DOM 요소를 가리킨다.
+    화살표 함수로 정의한 이벤트 핸들러 내부의 this는 상위 스코프의 this를 가리킨다.
+    화살표 함수는 함수 자체의 this 바인딩을 갖지 않는다.
+10. 이벤트 핸들러에 인수 전달
+    함수에 인수를 전달하려면 함수를 호출할 때 전달해야 한다. 
+    이벤트 핸들러 어트리뷰트 방식은 함수 호출문을 사용할 수 있기 때문에 인수를 전달할 수 있지만 이벤트 핸들러 프로퍼티 방식과 addEventListener 메서드 방식의 경우 이벤트 핸들러를 브라우저가 호출하기 떄문에 함수 호출문이 아닌 함수 자체를 등록해야 한다.
+    이벤트 핸들러 내부에서 함수를 호출하면서 인수를 전달할 수 있다.
+    또는 이벤트 핸들러를 반환하는 함수를 호출하면서 인수를 전달할 수도 있다.
+11. 커스텀 이벤트
+11-1. 커스텀 이벤트 생성
+    이벤트가 발생하면 암묵적으로 생성되는 이벤트 객체는 발생한 이벤트의 종류에 따라 이벤트 타입이 결정된다.
+    하지만 Event, UIEvent, MouseEvent 같은 이벤트 생성자 함수를 호출하여 명시적으로 생성한 이벤트 객체는 임의의 이벤트 타입을 지정할 수 있다.
+    이처럼 개발자의 의도로 생성된 이벤트를 커스텀 이벤트라 한다.
+    이벤트 생성자 함수는 첫 번쨰 인수로 이벤트 타입을 나타내는 문자열을 전달받는다. 이때 이벤트 타입을 나타내는 문자열은기존 이벤트 타입을 사용할 수도 있고, 기존 이벤트 타입이 아닌 임의의 문자열을 사용하여 새로운 이벤트 지정할 수도 있다.
+    일반적으로 CustomEvent 이벤트 생성자 함수를 사용한다.
+    생성된 커스텀 이벤트 객체는 버블링되지 않으며 preventDefault 메서드로 취소할 수도 없다.
+    커스텀 이벤트 객체의 bubbles 또는 canclable 프로퍼티를 갖는 객체를 전달한다.
+    이벤트 생성자 함수로 생성한 커스텀 이벤트는 isTrusted 프로퍼티의 값이 언제나 false다.
+    커스텀 이벤트가 아닌 사용자의 행위에 의해 발생한 이벤트에 의해 생성된 이벤트 객체는 isTrusted 프로퍼티 값은 언제나 true다.
+11-2. 커스텀 이벤트 디스패치
+    생성된 커스텀 이벤트는 dispatchEvent 메서드로 디스패치할 수 있다.
+    dispatchEvent 메서드에 이벤트 객체를 인수로 전달하면서 호출하면 인수로 전달한 이벤트 타입의 이벤트가 발생한다.
+
+*/
+
+document.querySelector('a').onclick = e => {
+    e.preventDefault();
+}
+
+document.querySelector('input[type=checkbox]').onclick = e => {
+    e.preventDefault();
+}
+
+//이벤트 위임 클릭된 하위 버튼 요소의 color를 변경한다.
+document.querySelector('.container').onclick = ({target}) => {
+    if(!target.matches('.container > button')) {return;}
+    target.style.color = 'red'
+}
+
+//.btn2 요소는 이벤트를 전파하지 않으므로 상위 요소에서 이벤트를 캐치 할 수 없다.
+document.querySelector('.btn2').onClick = e => {
+    e.stopPropagation();
+    e.target.style.color = 'blue'
+}
+
+function handleClick() {
+    console.log(this);
+}
+
+function handleClick2(button) {
+    console.log(button) //이벤트를 바인딩한 button 요소
+    console.log(this); //window
+}
+
+
+let button1 = document.querySelector('.button1');
+let button2 = document.querySelector('.button2');
+
+//이벤트 핸들러 프로퍼티 방식
+button1.onclick = function(e) {
+    //this는 이벤트를 바인딩한 DOM 요소를 가리킨다.
+    console.log(this); //<button class="button1">0</button>
+    console.log(e.currentTarget); //<button class="button1">0</button>
+    console.log(this === e.currentTarget); //true
+
+    //button1의 textContent를 1증가시킨다.
+    ++this.textContent;
+};
+
+button2.onclick = e => {
+    console.log(this); //[object Window]
+    console.log(e.currentTarget); //<button class="button2">0</button>
+    console.log(this === e.currentTarget); //false;
+
+    ++this.textContent; //this는 윈도우를 가리키므로 window.textContent에 NaN을 할당한다.
+}
+
+let MIN_USER_NAME_LENGTH = 5;
+let input = document.querySelector('input[type=text]');
+let msg = document.querySelector('.message');
+
+let checkUserNameLength = min => {
+    msg.textContent = input.value.length < min ? `이름은 ${min}자 이상 입력해주세요`: '';
+};
+//이벤트 핸들러 내부에서 함수를 호출하면서 인수를 전달한다.
+input.onblur = () => {
+    checkUserNameLength(MIN_USER_NAME_LENGTH);
+}
+</script>
+
+</body>
+</html>
